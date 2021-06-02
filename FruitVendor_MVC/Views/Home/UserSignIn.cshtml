@@ -1,0 +1,96 @@
+﻿
+
+@{
+    ViewData["Title"] = "LoginUser";
+}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#btnAdminLogin').click(function () {
+                let userName = $('#userName').val();
+                let password = $('#passwd').val();
+                let item = { personName: userName, personPasswd: password }
+                $.ajax({
+                    url: 'https://localhost:44363/api/Identity/authenticate/person',
+                    type: 'POST',
+                    data: JSON.stringify(item),
+                    contentType: "application/json",
+                    success: function (data, textStatus, xhr) {
+                        console.log(data.result.token);
+                        sessionStorage.setItem("jwtToken", data.result.token);
+                        sessionStorage.setItem("userName", data.result.person.personName);
+                        sessionStorage.setItem("userId", data.result.person.userId);
+                        sessionStorage.setItem("adminId", data.result.person.adminId);
+                        sessionStorage.setItem("role", data.result.person.role);
+
+                        if (sessionStorage.getItem("role") == "user") {
+                            window.location.href = "home/UserIndex";
+                        }
+                        else {
+                            window.location.href = "Admin/AdminIndex";
+                        }
+
+
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Error Occured: " + xhr.responseText);
+                    }
+                });
+            });
+            $(document).ajaxStart(function () {
+                $("#processDiv").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#processDiv").hide();
+            });
+        });
+
+
+
+
+    </script>
+</head>
+
+
+
+<h1>LoginUser</h1>
+
+<h4>UserTbl</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <table>
+
+
+            <tr>
+                <td>UserName: </td>
+                <td><input type="text" id="userName" /></td>
+            </tr>
+            <tr>
+                <td>Password: </td>
+                <td><input type="text" id="passwd" /></td>
+            </tr>
+
+
+            <tr>
+                <td><input type="button" value="Login" id="btnAdminLogin" /></td>
+            </tr>
+
+        </table>
+
+
+    </div>
+</div>
+
+<div id="processDiv" style="display:none">Processing.....</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
