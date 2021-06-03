@@ -12,5 +12,9 @@ namespace FruitVendor_MVC.Controllers
         {
             return View();
         }
+        public IActionResult AdminFruit()
+        {
+            return View();
+        }
     }
 }
