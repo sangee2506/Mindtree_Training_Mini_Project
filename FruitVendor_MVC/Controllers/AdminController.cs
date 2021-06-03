@@ -16,5 +16,9 @@ namespace FruitVendor_MVC.Controllers
         {
             return View();
         }
+        public IActionResult AdminOrders()
+        {
+            return View();
+        }
     }
 }
