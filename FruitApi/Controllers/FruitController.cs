@@ -1,5 +1,6 @@
 ﻿using FruitUserApi.Models;
 using FruitUserApi.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace FruitUserApi.Controllers
 {
+    [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
     public class FruitController : ControllerBase
@@ -18,14 +20,14 @@ namespace FruitUserApi.Controllers
         {
             repo = new FruitRepository();
         }
-
+        
         [HttpGet]
         public ActionResult GetAllFruits()
         {
             List<Fruit> list = repo.GetAllData();
             return Ok(list);
         }
-
+        
         [HttpGet("{id}")]
         public ActionResult GetFruitById(int id)
         {
@@ -44,7 +46,7 @@ namespace FruitUserApi.Controllers
         public ActionResult updateFruit(Fruit fruit)
         {
 
-            if (fruit.FruitQty != 0)
+            if (fruit.FruitQty != -1)
             {
                 repo.UpdateQtyOfFruit(fruit);
                 return Ok("Updated Successfully");

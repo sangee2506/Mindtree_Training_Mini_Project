@@ -1,5 +1,217 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    ViewData["Title"] = "Home Page";
 }
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <!--MODAL POPUP FOR ACCEPTING ADDRESS AND PAYMENT mETHOD-->
+    <div class="container">
+        <!--By Default Hidden-->
+        <h4 id="toggleAddress" style="display:none"><span>Billing Address:</span>  <span id="getAddress"></span></h4>
+        <h4 id="togglePayMethod" style="display:none"><span>Billing Method:</span>   <span id="getPayMethod"></span></h4>
+
+        <!--By Default Hidden-->
+        <p id="togglePlaceOrder" style="display:none">
+            <button id="btnOrder" class="btn btn-success">Place Order</button>
+        </p>
+
+        <!-- Trigger the modal with a button -->
+        <div class="alert alert-success" id="toggleAddDetails">
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit Profile</button>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="background-color: aquamarine;">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Details To Place Order</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert">
+
+                            <select id="selectPayMethod">
+                                <option>UPI</option>
+                                <option>COD</option>
+                                <option>Debit Card</option>
+                            </select>
+
+                            <input id="txtBillingAddress" type="text" placeholder="Enter Your Address" />
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button onclick='acceptDetailsForOrders()' type="button" class="btn-success" data-dismiss="modal">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="container">
+        <table class="table table-bordered table-striped" id="list">
+            <tr>
+                <th> Image </th>
+                <th> Cart Qty </th>
+                <th> Cart Amount </th>
+                <th> Delete </th>
+                <th> Edit </th>
+                <th> User Id </th>
+            </tr>
+            <!--   your fruits are displayed here in responsive way     -->
+        </table>
+    </div>
+
+
+
+</body>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnOrder").click(function () {
+            ajaxCreateOrderByUserId();
+        });
+
+        validateAjaxGetCartByUserId();
+    });
+
+    function validateAjaxGetCartByUserId() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/cart/' + userId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+                ResponseForValidateAjaxGetCartByUserId(data);
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+
+                window.location.href = url;
+            }
+            @*error: function (err) {
+                alert('You are not authorized...Redirecting to sign in');
+                var url = "https://localhost:44350/";
+
+                window.location.href = url;
+            }*@
+        });
+    }
+    function ResponseForValidateAjaxGetCartByUserId(data) {
+        var row = "";
+        $.each(data, function (index, trav) {
+            row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + ".png' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>    <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId +")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";         
+        })
+        $('#list').append(row);//Ability to manipulate DOM using jQuery
+    }
+
+
+    function ajaxDeleteCartItem(CartId) {
+        $.ajax({
+            url: 'https://localhost:44339/api/cart/'+CartId,
+            type: 'DELETE',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('Deletion done ... ');
+                window.location.href = "https://localhost:44350/home/UserCart";
+            },
+            error: function (x, y, z) {
+                alert("Traveller Id not found");
+            }
+        });
+    }
+
+    function ajaxCreateOrderByUserId() {
+       
+
+        let userId = sessionStorage.getItem("userId");
+        jQuery.support.cors = true;
+       
+        var OrderDate = "June"
+        var PaymentMethod = $('#selectPayMethod').val();
+        var BillingAddress = $('#txtBillingAddress').val();
+
+        var obj = {
+            OrderId:0,
+            OrderQty:0,
+            OrderAmount:0,
+            OrderDate: OrderDate,
+            PaymentMethod: PaymentMethod,
+            BillingAddress: BillingAddress,
+            FruitId:0,
+            UserId:userId
+        };
+        $.ajax({
+            url: 'https://localhost:44339/api/Order/' + userId,
+            type: 'POST',
+            data: JSON.stringify(obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('created Your Order');
+                var url = "https://localhost:44350/home/UserOrder";
+
+                window.location.href = url;
+            },
+            error: function (err) {
+                alert('err');
+                alert(err.WriteResponse);
+            }
+        });
+    }
+
+
+    function acceptDetailsForOrders() {
+        var txtBillingAddress = $('#txtBillingAddress').val();
+        var selectPayMethod = $('#selectPayMethod').val();
+
+        $('#getAddress').text(txtBillingAddress);
+        $('#getPayMethod').text(selectPayMethod);
+
+        $('#toggleAddress').show();
+        $('#togglePayMethod').show();
+
+        $('#togglePlaceOrder').show();
+        $('#toggleAddDetails').hide();
+    }
+
+    function editCartItem(cartId) {
+        var url = "/Home/UserCartEdit/?cartId=" + cartId;
+        window.location.href = url;
+    } 
+
+
+</script>

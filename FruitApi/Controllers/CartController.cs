@@ -1,4 +1,5 @@
 ﻿using FruitUserApi.Models;
+using FruitUserApi.Models.VM;
 using FruitUserApi.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,23 +23,17 @@ namespace FruitUserApi.Controllers
         [HttpGet]
         public ActionResult GetAllCarts()
         {
-            List<Cart> list = repo.GetAllData();
+            List<CartViewModel> list = repo.GetAllData();
             return Ok(list);
         }
 
         // GET api/<TravellerController>/5
-        [HttpGet("{id}")]
-        public ActionResult GetCartById(int id)
+        [HttpGet("{userId}")]
+        public ActionResult GetCartByUserId(int userId)
         {
-            Cart cart = repo.GetDataById(id);
-            if (cart!=null)
-            {
-                return Ok(cart);
-            }
-            else
-            {
-                return NotFound(id + "\t is present");
-            }           
+
+            List<CartViewModel> list = repo.GetAllDataByUserId(userId);
+            return Ok(list);
         }
 
         [HttpPost]
@@ -68,6 +63,29 @@ namespace FruitUserApi.Controllers
             {
                 return NotFound(id + "\t is not present");
             }     
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult updateCartQty(Cart cart)
+        {
+
+            if (cart.CartQty != 0)
+            {
+                bool res=repo.UpdateQtyOfCart(cart);
+                if (res)
+                {
+                    return Ok("Updated cart Qty Successfully");
+                }
+                else
+                {
+                    return BadRequest("cart Qty can not be updated due to bad data");
+                }
+               
+            }
+            else
+            {
+                return BadRequest("cart Qty can not be 0");
+            }
         }
     }
 }

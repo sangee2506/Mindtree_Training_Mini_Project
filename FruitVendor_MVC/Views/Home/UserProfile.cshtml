@@ -1,0 +1,187 @@
+﻿<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <center id="defaultHidden" style="display:none">
+        <div class="container">
+            <center>
+                <img src="/Images/ImgUserProfile.png" alt="Avatar" class="avatar" style='width: 200px; height: 200px;'>
+            </center>
+            <br />
+            <div class="alert alert-info">
+                <p> <b>UserId :</b>     <span class="setUserId"></span> </p>
+                <p> <b>UserName :</b>   <span class="setUserName"></span> </p>
+                <p> <b>UserPasswd :</b> <span class="setUserPasswd"></span> </p>
+                <p> <b>Gender :</b>     <span class="setGender"></span> </p>
+                <p> <b>Email :</b>      <span class="setEmail"></span> </p>
+                <p> <b>MobNum :</b>     <span class="setMobNum"></span> </p>
+            </div>
+        </div>
+    </center>
+    <div class="spinner-border text-danger" id="process"></div>
+
+   
+    <!--MODAL POPUP FOR ACCEPTING ADDRESS AND PAYMENT mETHOD-->
+    <div class="container">
+        
+
+        <!-- Trigger the modal with a button -->
+        <div class="alert alert-success" id="toggleAddDetails">
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit Profile</button>   <span id="msg">You can Update Your Profile</span>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="background-color: aquamarine;">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Your Profile:</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <p> <b>UserId :</b>     <span name="UserId" class="setUserId"></span> </p>
+                            <p> <b>UserName :</b>   <span class="setUserName"></span> </p>
+                            <p> <b>UserPasswd :</b> <input id="setUserPasswd" class="setUserPasswd"/> </p>
+                            <p> <b>Gender :</b>     <span id="setGender" class="setGender"></span> </p>
+                            <p> <b>Email :</b>      <input id="setEmail"class="setEmail"/> </p>
+                            <p> <b>MobNum :</b>     <input id="setMobNum" class="setMobNum"/> </p>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button onclick='validateAjaxEditUser()' type="button" class="btn-success" data-dismiss="modal">Save New Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script>
+    
+    $(document).ready(function () {
+        $('#process').hide();
+        $('#defaultHidden').show();
+     
+        validateAjaxGetUserByUserId();
+       @* $("#btnOrder").click(function () {
+           // ajaxCreateOrderByUserId();
+        });*@   
+    });
+    
+
+    function validateAjaxGetUserByUserId() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/User/' + userId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+                ResponseAjaxGetUserByUserId(data);
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+
+                window.location.href = url;
+            }
+        });
+    }
+
+    function ResponseAjaxGetUserByUserId(data) {
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        $('.setUserId').text(data.userId);
+        $('.setUserName').text(userName);
+
+        $('.setUserPasswd').val(data.userPasswd);
+        $('.setUserPasswd').text(data.userPasswd);
+
+        $('.setGender').text(data.gender);
+
+        $('.setEmail').val(data.email);
+        $('.setEmail').text(data.email);
+
+        $('.setMobNum').val(data.mobNum);
+        $('.setMobNum').text(data.mobNum);
+    }
+
+    function validateAjaxEditUser() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+       
+        var UserId = sessionStorage.getItem("userId");
+        let UserName = sessionStorage.getItem("userName");
+        var UserPasswd = $('#setUserPasswd').val();
+        var Gender = $('#setGender').text();
+        var Email = $('#setEmail').val();
+        var MobNum = $('#setMobNum').val();
+
+       // alert(UserId + '/' + UserName + '/' + UserPasswd + '/' + Gender + '/' + Email + '/' + MobNum);
+
+        var obj = {
+            UserId: UserId,
+            UserName: UserName,
+            UserPasswd: UserPasswd,
+            Gender: Gender,
+            Email: Email,
+            MobNum: MobNum
+        };
+
+        $.ajax({
+            url: 'https://localhost:44339/api/User/' + UserId,
+            type: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(obj),        //Convert Javascript object into Json
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                //alert('updated your profile successfully');
+
+                @*var url = "https://localhost:44350/Home/UserProfile";
+                window.location.href = url;*@
+                validateAjaxGetUserByUserId();
+
+                $('#msg').text('Your Profile is Edited Successfully');
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+                window.location.href = url;
+            }
+        });
+    }
+
+    
+</script>

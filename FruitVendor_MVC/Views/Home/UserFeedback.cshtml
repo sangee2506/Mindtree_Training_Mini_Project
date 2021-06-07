@@ -1,0 +1,45 @@
+﻿<head>
+    <!--Jquery CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    @*<script src="~/js/TokenValidator.js"></script>*@
+
+</head>
+<body>
+    <h1>User order</h1>
+
+    <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
+    <div class="text-center" id="IndexPage">
+        <h1 class="display-4">Welcome</h1> <h1 id="userName"></h1>
+        <br />
+    </div>
+
+</body>
+
+<script>
+
+    $(document).ready(function () {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+        console.log(userName);
+        console.log(jwtToken);
+        $('#userName').html(userName);
+        $.ajax({
+            type: "GET",
+            url: 'https://localhost:44339/api/Fruit',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (result, status, xhr) {
+                alert('authorized');
+                Success();
+            },
+            error: function (err) {
+                //alert('unauthorized');
+                $("#unAuthorised").show();
+            }
+        });
+    });
+
+</script>
