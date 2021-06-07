@@ -21,16 +21,17 @@ namespace FruitUserApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAllFruits()
+        public ActionResult GetAllOrders()
         {
             List<Order> list = repo.GetAllData();
             return Ok(list);
         }
-
-        [HttpPost]
-        public ActionResult CreateCart(Order order)
+        
+        [HttpPost("{userId}")]
+        //[HttpPost]
+        public ActionResult MoveCartToOrders(int userId,Order order)
         {
-            bool res = repo.CreateData(order);
+            bool res = repo.CreateData(userId,order);
             if (res)
             {
                 return Ok("order Placed");
@@ -40,8 +41,12 @@ namespace FruitUserApi.Controllers
                 return BadRequest("not added");
             }
         }
-
-
+        [HttpGet("{userId}")]
+        public ActionResult GetAllOrdersByUserId(int userId)
+        {
+            List<Order> list = repo.GetAllDataByUserId(userId);
+            return Ok(list);
+        }
     }
 }
 //  3)will able to perform Create and Read Order Table

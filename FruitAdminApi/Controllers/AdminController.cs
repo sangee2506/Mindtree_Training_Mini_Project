@@ -21,8 +21,6 @@ namespace FruitAdminApi.Controllers
             repo = new AdminRepository();
         }
 
-        
-
         [HttpGet]
         public ActionResult GetAllAdmins()
         {
@@ -41,7 +39,7 @@ namespace FruitAdminApi.Controllers
         [HttpGet("{id}")]
         public ActionResult GetAdminById(int id)
         {
-            Admin admin = repo.GetDataById(id);
+            Admin admin = repo.GetAdminById(id);
             if (admin != null)
             {
                 return Ok(admin);
@@ -53,10 +51,10 @@ namespace FruitAdminApi.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult CreateNewAdmin(Admin admin)
+        public async Task<ActionResult> CreateNewAdmin(Admin admin)
         {
 
-            Admin res = repo.CreateDataAsync(admin);
+            Admin res = await repo.CreateAdmin(admin);
             
             return Ok(res.AdminName+"\t is created successfully");
             

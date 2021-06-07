@@ -1,5 +1,6 @@
 ﻿using FruitUserApi.Data;
 using FruitUserApi.Models;
+using FruitUserApi.Models.VM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,79 @@ namespace FruitUserApi.Repository
             db = new FruitVendorContext();
         }
 
-        public List<Cart> GetAllData()
+        /* public List<Cart> GetAllData()
+         {
+             return db.Carts.ToList();
+         }*/
+
+        public List<CartViewModel> GetAllData()
         {
-            return db.Carts.ToList();
+            List<Cart> cartList= db.Carts.ToList();
+            List<Fruit> fruitList = db.Fruits.ToList();
+
+            Fruit fruitItem = null;
+            CartViewModel cartViewModelItem = null;
+            List<CartViewModel> cartViewModelList = new List<CartViewModel>();
+            foreach (Cart cart in cartList)
+            {
+                fruitItem = db.Fruits.Find(cart.FruitId);
+                cartViewModelItem = new CartViewModel()
+                {
+                    CartId = cart.CartId,
+                    CartQty = cart.CartQty,
+                    CartAmount = cart.CartAmount,
+                    FruitId = cart.FruitId,
+                    FruitImg = fruitItem.FruitImg,
+                    UserId = cart.UserId
+                };
+
+                cartViewModelList.Add(cartViewModelItem);
+            }//foreach
+            return cartViewModelList;
         }
 
-     
+        internal List<CartViewModel> GetAllDataByUserId(int userId)
+        {
+            List<Cart> cartList = db.Carts.ToList();
+            List<Fruit> fruitList = db.Fruits.ToList();
+
+            Fruit fruitItem = null;
+            CartViewModel cartViewModelItem = null;
+            List<CartViewModel> cartViewModelList = new List<CartViewModel>();
+            foreach (Cart cart in cartList)
+            {
+                if (cart.UserId == userId)//filter by userId
+                {
+                    fruitItem = db.Fruits.Find(cart.FruitId);
+                    cartViewModelItem = new CartViewModel()
+                    {
+                        CartId = cart.CartId,
+                        CartQty = cart.CartQty,
+                        CartAmount = cart.CartAmount,
+                        FruitId = cart.FruitId,
+                        FruitImg = fruitItem.FruitImg,
+                        UserId = cart.UserId
+                    };
+                    cartViewModelList.Add(cartViewModelItem);
+                }               
+            }//foreach
+            return cartViewModelList;
+        }
+
+        internal bool UpdateQtyOfCart(Cart cart)
+        {
+            if (cart != null)
+            {
+                db.Carts.Update(cart);
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool CreateData(Cart obj)
         {
             if (obj != null)
@@ -36,11 +104,7 @@ namespace FruitUserApi.Repository
             
         }
 
-        internal Cart GetDataById(int id)
-        {
-            Cart cart = db.Carts.Find(id);
-            return cart;
-        }
+        
 
         internal bool DeleteData(int id)
         {

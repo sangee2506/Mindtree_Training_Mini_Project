@@ -3,17 +3,15 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
     <script type="text/javascript">
         $(document).ready(function () {
             let jwtToken = sessionStorage.getItem("jwtToken");
             let userName = sessionStorage.getItem("userName");
-            console.log(userName);
-            console.log(jwtToken);
-            $('#userName').html(userName);
+            
             $.ajax({
                 type: "GET",
-                url: 'https://localhost:44329/api/Admin',
+                url: 'https://localhost:44329/api/AdminFruit',
                 headers: {
                     Authorization: 'Bearer ' + jwtToken
                 },
@@ -21,10 +19,10 @@
                 success: function (result, status, xhr) {
                     $("#IndexPage").show();
                    // alert("successful " + result[0].name);
-                    var customersTable = $('#GetAllCustomers');
-                    customersTable.empty();
-                    $(result).each(function (index, customer) {
-                        customersTable.append(AddCustomerRow(customer))
+                    var FruitsTable = $('#GetAllFruits');
+                    FruitsTable.empty();
+                    $(result).each(function (index, fruit) {
+                        FruitsTable.append(AddFruitRow(fruit))
                     });
 
                 },
@@ -33,21 +31,46 @@
                 }
             });
         });
-        function AddCustomerRow(customer) {
+        function AddFruitRow(fruit) {
             var row =
-                "<tr><td id='customerId'>" + customer.id + "</td>" +
-                "<td>" + customer.name + "</td>" +
-                "<td>" + customer.startLocation + "</td>" +
-                "<td>" + customer.endLocation + "</td>" +
+                "<tr><td>" + "<img src='/Images/"+fruit.fruitImg +"' height='100px' width='100px'/>"+"</td>" +
+                "<td>" + fruit.fruitId + "</td>" +
+                "<td>" + fruit.fruitName + "</td>" +
+                "<td>" + fruit.fruitPrice + "</td>" +
+                "<td>" + fruit.fruitQty + "</td>" +
+
                 "<td>" +
                 "<button type='button' " +
-                "onclick='redirectToFurnitures(this)' " +
+                "onclick='goToEditFruit(this)' " +
                 "class='btn btn-primary' " +
-                "data-id='" + customer.id + "'>" +
-                "Buy" +
+                "data-id='" + fruit.fruitId+ "'>" +
+                "Update" +
                 "</button>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp" +
+                "<button type='button' " +
+                "onclick='deleteFruit(this)' " +
+                "class='btn btn-danger' " +
+                "data-id='" + fruit.fruitId + "'>" +
+                "Delete" +
+                "</button>"
+                +
                 "</td></tr>";
             return row;
+        }
+        //Delete Fruit 
+        function deleteFruit(fruit) {
+            var id = $(fruit).data("id");
+
+            $.ajax({
+                url: "https://localhost:44329/api/AdminFruit/" + id,
+                type: 'DELETE',
+                success: function (response) {
+                    $(fruit).parents("tr").remove();
+                },
+                error: function (xhr, message, error) {
+                    alert("Error:" + xhr.responseText)
+                }
+            });
         }
     </script>
 </head>
@@ -55,19 +78,44 @@
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
 <div class="text-center" id="IndexPage" style="display:none">
-
-    <h1 class="display-4">Welcome</h1> <h1 id="userName"></h1>
+    <h3 style="align-self:center">Fruits available on Website</h3>
     <br />
+
     <table class="table table-bordered">
         <tr>
-            <th> Id</th>
-            <th> Name</th>
-            <th>start location</th>
-            <th>End Location</th>
+            <th>Fruit Image</th>
+            <th> Fruit Id</th>
+            <th> Fruit Name</th>
+            <th>Fruit Price</th>
+            <th>Fruit Quantity</th>
+            <th>Actions</th>
 
         </tr>
-        <tbody id="GetAllCustomers"></tbody>
+        <tbody id="GetAllFruits"></tbody>
+
+
     </table>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 

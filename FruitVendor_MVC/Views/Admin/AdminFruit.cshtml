@@ -1,6 +1,112 @@
-﻿
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<head>
+
+    <script type="text/javascript">
+        var imgURL = "";
+        $(document).ready(function () {
+            if (sessionStorage.getItem("role") == "admin") {
+                $("#IndexPage").show();
+            }
+            else {
+                $("#unAuthorised").show();
+            }
+            $('#addFruit').click(function () {
+                let jwtToken = sessionStorage.getItem("jwtToken");
+                let userName = sessionStorage.getItem("userName");
+                let name = $('#name').val();
+                let price = $('#price').val();
+                let qty = $('#quantity').val();
+                var file = $("#selectedImg").get(0).files;
+                console.log(file);
+
+                imgURL = imgURL.replace('data:image/png;base64,', "");
+                console.log(imgURL);
+
+
+                let item = { fruitName: name, fruitPrice: price, fruitQty: qty, fruitImgFile: imgURL };
+                console.log(item);
+
+
+                $.ajax({
+                    url: 'https://localhost:44329/api/AdminFruit',
+                    type: 'POST',
+                    data: JSON.stringify(item),
+                    contentType: "application/json",
+                    headers: {
+                        Authorization: 'Bearer ' + jwtToken
+                    },
+                    success: function (result, status, xhr) {
+                        
+                        alert("Fruit added to the website");
+
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Error Occured: " + xhr.responseText);
+                        console.log(xhr.responseText);
+                        
+                    }
+                });
+            });
+
+        });
+        function readURL(input) {
+            console.log(input.files);
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#previewImage')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(200);
+                    imgURL = reader.result;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+                return imgURL
+            }
+        }
+
+
+
+    </script>
+</head>
+
+<h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
+
+<div class="text-center" id="IndexPage" style="display:none">
+
+    <div class="submain">
+
+        <div class="row">
+
+            Fruitname:<input type="text" id="name">
+        </div>
+        <div class="row">
+            FruitPrice:<input type="number" step="any" min="0 " id="price">
+        </div>
+        <div class="row">
+            Quantity:<input type="number" id="quantity">
+        </div>
+        <div class="row">
+            <input type='file' id="selectedImg" onchange="readURL(this)" />
+            <img id="previewImage" src="#" alt="your image" />
+        </div>
+
+        <div class="row d-flex justify-content-center">
+            <button type="submit" id="addFruit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+

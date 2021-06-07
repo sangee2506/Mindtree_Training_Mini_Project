@@ -20,31 +20,53 @@ namespace FruitUserApi.Repository
             return db.Orders.ToList();
         }
 
-        internal bool CreateData(Order order)
+        internal bool CreateData(int userId, Order order)
         {
            List<Cart> cartList= db.Carts.ToList();
            
            foreach(Cart cart in cartList)
             {
-                Order obj = new Order()
+                if (userId == cart.UserId)
                 {
-                    OrderAmount = cart.CartAmount,
-                    OrderDate = order.OrderDate,
-                    PaymentMethod = order.PaymentMethod,
-                    BillingAddress =order.BillingAddress,
-                    FruitId = cart.FruitId,
-                    UserId =cart.UserId
-                 };
-                db.Orders.Add(obj);
-                db.SaveChanges();            
+                    Order obj = new Order()
+                    {
+                        OrderQty = cart.CartQty,
+                        OrderAmount = cart.CartAmount,
+                        OrderDate = order.OrderDate,
+                        PaymentMethod = order.PaymentMethod,
+                        BillingAddress = order.BillingAddress,
+                        FruitId = cart.FruitId,
+                        UserId = cart.UserId
+                    };
+                    db.Orders.Add(obj);
+                    db.SaveChanges();
+                }                      
             }
 
             foreach (Cart cart in cartList)
             {
-                db.Carts.Remove(cart);
-                db.SaveChanges();
+                if (userId == cart.UserId)
+                {
+                    db.Carts.Remove(cart);
+                    db.SaveChanges();
+                }           
             }
             return true;
+        }
+
+        internal List<Order> GetAllDataByUserId(int userId)
+        {
+            List<Order> orderList = db.Orders.ToList();
+            List<Order> orderReturn = new List<Order>();
+         
+            foreach(Order order in orderList)
+            {
+                if(order.UserId==userId)
+                {
+                    orderReturn.Add(order);
+                }                            
+            }
+            return orderReturn;
         }
     }
 }

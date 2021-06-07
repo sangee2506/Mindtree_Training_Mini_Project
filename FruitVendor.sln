@@ -9,7 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitAdminApi", "FruitAdmin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityService", "IdentityService\IdentityService.csproj", "{E2DC0B84-B4E2-4416-9D88-308EAC217FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitVendor_MVC", "FruitVendor_MVC\FruitVendor_MVC.csproj", "{248B35D2-B459-475B-93C4-2570FF6CA146}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitVendor_MVC", "FruitVendor_MVC\FruitVendor_MVC.csproj", "{248B35D2-B459-475B-93C4-2570FF6CA146}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E90037D0-28C8-4CDD-A35A-463C019BB9AF} = {E90037D0-28C8-4CDD-A35A-463C019BB9AF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

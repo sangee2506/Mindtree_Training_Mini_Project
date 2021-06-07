@@ -26,10 +26,10 @@
                         sessionStorage.setItem("role", data.result.person.role);
 
                         if (sessionStorage.getItem("role") == "user") {
-                            window.location.href = "home/UserIndex";
+                            window.location.href = "/home/UserIndex";
                         }
                         else {
-                            window.location.href = "Admin/AdminIndex";
+                            window.location.href = "/Admin/AdminIndex";
                         }
 
 
