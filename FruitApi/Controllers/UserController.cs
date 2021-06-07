@@ -44,5 +44,35 @@ namespace FruitUserApi.Controllers
                 return BadRequest(user.UserName + "\t not added");
             }
         }
+        [HttpGet("{userId}")]
+        public async Task<ActionResult> GetUserByUserId(int userId)
+        {
+            User user= await repo.GetDataByUserId(userId);
+            return Ok(user);
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateUser(User user)
+        {
+
+            if (user!=null)
+            {
+                bool res = await repo.UpdateData(user);
+                if (res)
+                {
+                    return Ok("Updated user Successfully");
+                }
+                else
+                {
+                    return BadRequest("User can not be updated due to bad data");
+                }
+
+            }
+            else
+            {
+                return BadRequest("can not update with empty values");
+            }
+        }
     }
 }

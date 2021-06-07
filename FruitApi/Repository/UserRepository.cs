@@ -55,6 +55,11 @@ namespace FruitUserApi.Repository
             }
         }
 
+        internal async Task<User> GetDataByUserId(int userId)
+        {
+            return await db.Users.FindAsync(userId);
+        }
+
         private async Task CreatePersonAsync(User user)
         {
             Person person = new()
@@ -66,6 +71,20 @@ namespace FruitUserApi.Repository
             };
             db.Persons.Add(person);
             await db.SaveChangesAsync();
+        }
+
+        internal async Task<bool> UpdateData(User user)
+        {
+            if (user != null)
+            {
+                db.Users.Update(user);
+                await db.SaveChangesAsync();
+                return  true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitAdminApi", "FruitAdmin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityService", "IdentityService\IdentityService.csproj", "{E2DC0B84-B4E2-4416-9D88-308EAC217FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitVendor_MVC", "FruitVendor_MVC\FruitVendor_MVC.csproj", "{248B35D2-B459-475B-93C4-2570FF6CA146}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitVendor_MVC", "FruitVendor_MVC\FruitVendor_MVC.csproj", "{248B35D2-B459-475B-93C4-2570FF6CA146}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitVendorTest", "FruitVendorTest\FruitVendorTest.csproj", "{56686BE5-84BD-41BA-98CA-322F4CAD8188}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{248B35D2-B459-475B-93C4-2570FF6CA146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{248B35D2-B459-475B-93C4-2570FF6CA146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{248B35D2-B459-475B-93C4-2570FF6CA146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56686BE5-84BD-41BA-98CA-322F4CAD8188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56686BE5-84BD-41BA-98CA-322F4CAD8188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56686BE5-84BD-41BA-98CA-322F4CAD8188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56686BE5-84BD-41BA-98CA-322F4CAD8188}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

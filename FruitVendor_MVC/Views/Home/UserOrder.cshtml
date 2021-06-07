@@ -1,0 +1,217 @@
+﻿<head>
+    <!--Jquery CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+
+</head>
+<body>
+    <h1>User order</h1>
+    <div class="container">
+        <table class="table table-bordered table-striped" id="list">
+            <tr>
+                <th> OrderId </th>
+                <th> OrderQty </th>
+                <th> OrderAmount </th>
+                <th> OrderDate </th>
+                <th> PaymentMethod </th>
+                <th> BillingAddress </th>
+                <th> FruitId </th>
+                <th> UserId </th>
+            </tr>
+
+            <!--   your fruits are displayed here in responsive way     -->
+        </table>
+        <br />
+        <center>
+            <div class="bg-info">
+                <h2>You have to pay   <b><span id="setNetAmount"></span></b></h2>
+                <br />
+                <button id="btnPaymentGateway" class="btn-success">Payment Gateway</button>
+            </div>
+        </center>
+
+       
+
+    </div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        validateAjaxGetAllOrders();
+      
+        $("#btnPaymentGateway").click(function () {          
+                ajaxUpdateFruitQty();
+            });  
+    });
+
+    function validateAjaxGetAllOrders() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $('#userName').html(userName);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/order/' + userId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+              
+                ResponseForAjaxGetAllOrders(data);
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+
+                window.location.href = url;
+            }
+        });
+    }
+    function ResponseForAjaxGetAllOrders(data) {
+        var netAmount = 0;
+        $.each(data, function (index, trav) {
+            let row = "<tr>   <td>" + trav.orderId + "</td>    <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td> </tr > ";
+            $('#list').append(row);//Ability to manipulate DOM using jQuery
+            netAmount = netAmount + trav.orderAmount;
+        })
+
+        var setNetAmount = "<span>" + netAmount + "</span>";
+        $('#setNetAmount').append(setNetAmount);
+    }
+
+    function ajaxUpdateFruitQty() {
+        
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $('#userName').html(userName);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/order/'+userId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+               
+                ResponseForAjaxUpdateFruitQty(data);
+            },
+            error: function (err) {
+                alert('You are not authorized...Redirecting to sign in');
+                var url = "https://localhost:44350/";
+                window.location.href = url;
+            }
+        });
+    }
+
+    function ResponseForAjaxUpdateFruitQty(data) {
+        
+        let userId = sessionStorage.getItem("userId");
+        $.each(data, function (index, trav) {
+            
+            ajaxGetFruitById(trav.orderQty, trav.fruitId);
+        })
+        alert('order Completed');
+        var url = "https://localhost:44350/home/UserIndex";
+
+        window.location.href = url;
+    }
+
+    function ajaxGetFruitById(newQty,fId) {
+        //alert('this ajaxGetFruitById qty=' + newQty + 'fid=' + fId);
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        var getFruitId = $('#getFruitId').val();
+      //  alert(userId + '=userId is made');
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/Fruit/' + fId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+               // alert('authorized Fruit GET[fid]');
+               // alert('ajaxGetFruitById');
+                ajaxUpdateFruitQtyOnPlaced(data,newQty);
+            },
+            error: function (err) {
+                alert(err.responseText);
+                var url = "https://localhost:44350/";
+
+                @* window.location.href = url;*@
+            }
+        });
+    }//ajaxGetFruitById
+
+
+    function ajaxUpdateFruitQtyOnPlaced(data, newQty) {
+        let FruitId = data.fruitId
+        let FruitName = data.fruitName;
+        let FruitPrice = data.fruitPrice;
+
+        let StockFruitQty = data.fruitQty;
+        let orderFruitQty = newQty;
+        let updateFruitQty = StockFruitQty - orderFruitQty;
+
+        let FruitImg = data.fruitImg
+
+        let FruitItem = {
+            FruitId: FruitId,
+            FruitName: FruitName,
+            FruitPrice: FruitPrice,
+            FruitQty: updateFruitQty,
+            FruitImg: FruitImg
+        }
+
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        $.ajax({
+            url: 'https://localhost:44339/api/Fruit/' + FruitId,
+            type: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(FruitItem),        //Convert Javascript object into Json
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+             //   alert('authorized Fruit Put');
+               @* alert('order Completed');
+                var url = "https://localhost:44350/home/UserIndex";
+
+                window.location.href = url;*@
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+
+    }
+
+</script>
