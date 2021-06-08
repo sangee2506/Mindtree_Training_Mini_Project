@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace FruitUserApi.CustomException
 {
-    public class EmailExistException : Exception
+    public class NullValuesException : Exception
     {
-        public EmailExistException(string message) : base(message)
+        public NullValuesException(string message) : base(message)
         {
         }
     }
