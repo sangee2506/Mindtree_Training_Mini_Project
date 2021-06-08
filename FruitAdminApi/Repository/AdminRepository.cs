@@ -1,4 +1,4 @@
-﻿using FruitUserApi.Data;
+﻿  using FruitUserApi.Data;
 using FruitUserApi.Models;
 using System;
 using System.Collections.Generic;
@@ -14,22 +14,22 @@ namespace FruitAdminApi.Repository
         {
             db = new FruitVendorContext();
         }
-
+        //get All Admins
         public List<Admin> GetAll()
         {
-            return db.Admins.ToList();
+           return db.Admins.ToList();
         }
-
-        public Admin CreateDataAsync(Admin admin)
+        //Create Admin
+        public async Task<Admin> CreateAdmin(Admin admin)
         {
             
-                db.Admins.Add(admin);
-                 db.SaveChanges();
-                 CreatePerson(admin);
+            db.Admins.Add(admin);
+            await db.SaveChangesAsync();
+            CreatePerson(admin);
             return admin;
              
         }
-
+        //Create Person as Admin
         private void CreatePerson(Admin admin)
         {
             Person person = new()
@@ -44,8 +44,8 @@ namespace FruitAdminApi.Repository
         }
 
         
-
-        internal Admin GetDataById(int id)
+        //Get Admin By Id
+        public Admin GetAdminById(int id)
         {
             Admin admin = db.Admins.Find(id);
             return admin;

@@ -82,7 +82,7 @@
     <div class="main_div">
         <div style="padding:7px" class="box">
             <h1>User SignUp</h1>
-            <form asp-action="UserSignUp">
+            <form>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group" style="margin:15px 15px">
@@ -130,54 +130,48 @@
 
     $(document).ready(function () {
 
-        $("#btnCreate").click(function () {
-           @* var txtUserName = $('#txtUserName').val();
-            var txtUserPasswd = $('#txtUserPasswd').val();
-            var txtGender = $('#txtGender').val();
-            var txtEmail = $('#txtEmail').val();
-            var txtMobNum = $('#txtMobNum').val();
-
-            console.log(txtUserPasswd);
-            alert(txtUserName + '/' + txtUserPasswd + '/' + txtGender + '/' + txtEmail + '/' + txtMobNum);
-*@
-            ajaxCreateUser();
-        });
+          ajaxCreateUser();
+        
     });//ready
 
 
     function ajaxCreateUser() {
-        jQuery.support.cors = true;
-        var txtUserName = $('#txtUserName').val();
-        var txtUserPasswd = $('#txtUserPasswd').val();
-        var txtGender = $('#txtGender').val();
-        var txtEmail = $('#txtEmail').val();
-        var txtMobNum = $('#txtMobNum').val();
-        var user = {
-            UserName: txtUserName,
-            UserPasswd: txtUserPasswd,
-            Gender: txtGender,
-            Email: txtEmail,
-            MobNum: txtMobNum
-        };
 
-        $.ajax({
-            url: 'https://localhost:44339/api/User',
-            type: 'POST',
-            data: JSON.stringify(user),
-            contentType: "application/json;charset=utf-8",
-            success: function (data) {
-                alert('created');
-            },
-            error: function (request, message, errorThrown) {
-                var msg = "";
-                msg += "Code: " + request.status + "\n";
-                msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+        $("#btnCreate").click(function () {
+            var txtUserName = $('#txtUserName').val();
+            var txtUserPasswd = $('#txtUserPasswd').val();
+            var txtGender = $('#txtGender').val();
+            var txtEmail = $('#txtEmail').val();
+            var txtMobNum = $('#txtMobNum').val();
+            var user = {
+                UserName: txtUserName,
+                UserPasswd: txtUserPasswd,
+                Gender: txtGender,
+                Email: txtEmail,
+                MobNum: txtMobNum
+            };
+
+            $.ajax({
+                url: 'https://localhost:44339/api/User',
+                type: 'POST',
+                data: JSON.stringify(user),
+                contentType: "application/json",
+                success: function (data) {
+                    alert("User created");
+                    window.location.href = "/home/UserSignIn";
+                },
+                error: function (request, message, errorThrown) {
+                    var msg = "";
+                    msg += "Code: " + request.status + "\n";
+                    msg += "Text: " + request.statusText + "\n";
+                    if (request.responseJSON != null) {
+                        msg += "Message" + request.responseJSON.Message + "\n";
+                    }
+                    alert(msg);
                 }
-                alert(msg);
-            }
+             });
         });
+       
     }
 
 

@@ -1,0 +1,89 @@
+﻿<head>
+    
+    <script type="text/javascript">
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        $(document).ready(function () {
+             $.ajax({
+                type: "GET",
+                url: 'https://localhost:44329/api/AdminOrder',
+                dataType: 'json',
+                headers: {
+                    Authorization: 'Bearer ' + jwtToken
+                },
+                success: function (result, status, xhr) {
+                    $("#IndexPage").show();
+                    console.log(result);
+                    var OrdersTable = $('#GetAllOrders');
+                    OrdersTable.empty();
+                    $(result).each(function (index, order) {
+                        OrdersTable.append(AddOrderRow(order))
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    //alert("Error:" + xhr.responseText);
+                    $("#unAuthorised").show();
+                }
+            });
+        });
+        function AddOrderRow(order) {
+            var row =
+                "<div class='card'>" +
+                "<div class='card-header' style='text-align: left'>" +
+                "ORDER ID : #" + order.orderId+
+                "</div>" +
+                "<div class='card-body'>" +
+                "<div class='row'>"+
+                "<div class='col-2'>" +
+                "<img src='/Images/" + order.fruit.fruitImg + "' height='100px' width='100px' />" +
+                "</div>" +
+                "<div class='col-2'>" +
+                "<p>" +  "FRUIT : "+"<br>"+order.fruit.fruitName + "</p>" +
+                "</div>" +
+                "<div class='col-2'>" +
+                "<p>" + "TOTAL : " + "<br>"+order.orderAmount+ "</p>" +
+                "</div>" +
+                "<div class='col-2'>" +
+                "<p>" + "SHIP TO : " + "<br>"  + order.user.userName + "</p>" +
+                "</div>" +
+                "<div class='col-2'>" +
+                "<p>" + "ORDER DATE : " + order.orderDate + "</p>" +
+                "</div>" +
+                "<div class='col-2'>" +
+                "<button type='button' " +
+                "onclick='goToViewDetails(this)' " +
+                "class='btn btn-secondary' " +
+                "data-id='" + order.orderId + "'>" +
+                "View Order Details" +
+                "</button>" +
+                "</div>" +
+                "</div>"+
+
+                "</div>" +
+                "</div>" +
+                "<br>";
+
+            return row;
+        }
+        function goToViewDetails(orderId)
+        {
+            let id = $(orderId).data("id");
+            let url = "/Admin/AdminOrderDetails/" + id;
+            window.location.href = url;
+        }
+
+    </script>
+    <style>
+        .card{
+            border:groove;
+        }
+    </style>
+</head>
+
+<h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
+
+<div class="text-center" id="IndexPage" style="display:none">
+    <div style="margin-top:20px" id="GetAllOrders"></div>
+    
+</div>

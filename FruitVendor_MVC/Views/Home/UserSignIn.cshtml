@@ -29,10 +29,10 @@
 
 
                         if (sessionStorage.getItem("role") == "user") {
-                            window.location.href = "home/UserIndex";
+                            window.location.href = "/home/UserIndex";
                         }
                         else {
-                            window.location.href = "Admin/AdminIndex";
+                            window.location.href = "/Admin/AdminIndex";
                         }
                     },
                     error: function (request, message, errorThrown) {

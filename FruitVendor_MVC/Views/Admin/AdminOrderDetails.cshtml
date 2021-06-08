@@ -1,0 +1,78 @@
+﻿<head>
+    <script type="text/javascript" >
+        var orderId = @ViewBag.orderId;
+    </script>
+    <script src="~/js/Admin Scripts/AdminOrderDetails.js"></script>
+</head>
+
+<h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
+
+<div class="text-center" id="IndexPage" style="display:none">
+    <br />
+    <h4>Order Details</h4>
+
+    <span style="margin-bottom:5px" id="orderId"> </span> &nbsp;|&nbsp;<span style="margin-bottom:5px" id="orderDate"> </span>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h6>Billing Address:</h6><br /><p id="billAddress"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Payment Method:</h6><br /><p id="payMethod"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Order Quantity:</h6><br /><p id="orderQty"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Order Total:</h6><br /><p id="orderTotal"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <h4>Product Details</h4>
+    <div class="jumbotron jumbotron-fluid">
+           <div class="row">
+                <div class="col-md-2">
+                    <img id="fruitImg" alt="fruitImg" height="100" width="100" />
+                </div>
+                <div class="col-md-2">
+                    <h6>Fruit Id:</h6><br /><p id="fruitId"></p>
+                </div>
+                <div class="col-md-2">
+                    <h6>Fruit Name:</h6><br /><p id="fruitName"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Fruit Price:</h6><br /><p id="fruitPrice"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6> Fruit Quantity:</h6><br /><p id="fruitQty"></p>
+                </div>
+            </div>
+    </div>
+
+    <br />
+    <h4>User Details</h4>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="row">
+                <div class="col-md-2">
+                    <h6>User Id:</h6><br /><p id="userId"></p>
+                </div>
+                <div class="col-md-2">
+                    <h6>User Name:</h6><br /><p id="userName"></p>
+                </div>
+                <div class="col-md-2">
+                    <h6>Gender:</h6><br /><p id="gender"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Email:</h6><br /><p id="email"></p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Mobile No:</h6><br /><p id="mobNo"></p>
+                </div>
+            </div>
+        </div>
+
+</div>
