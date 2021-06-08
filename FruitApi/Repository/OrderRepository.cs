@@ -32,11 +32,12 @@ namespace FruitUserApi.Repository
                     {
                         OrderQty = cart.CartQty,
                         OrderAmount = cart.CartAmount,
-                        OrderDate = order.OrderDate,
+                        OrderDate = System.DateTime.Now.Date,
                         PaymentMethod = order.PaymentMethod,
                         BillingAddress = order.BillingAddress,
                         FruitId = cart.FruitId,
-                        UserId = cart.UserId
+                        UserId = cart.UserId,
+                        Status = "pending"
                     };
                     db.Orders.Add(obj);
                     db.SaveChanges();

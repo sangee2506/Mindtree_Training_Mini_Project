@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FruitUserApi.Controllers
 {
-    [Authorize(Roles="user")]
+    /*[Authorize(Roles = "user")]*/
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -29,20 +29,27 @@ namespace FruitUserApi.Controllers
             return Ok(list);
         }
 
-        [AllowAnonymous]
+        /*[AllowAnonymous]*/
         [HttpPost]
         public async Task<ActionResult> CreateNewUser(User user)
         {
-            
-            bool res = await repo.CreateDataAsync(user);
-            if (res)
+            try
             {
-                return Ok(user.UserName + "\t is created successfully");
+                bool res = await repo.CreateDataAsync(user);
+                if (res)
+                {
+                    return Ok(user.UserName + "\t is created successfully");
+                }
+                else
+                {
+                    return BadRequest(user.UserName + "\t not added");
+                }
             }
-            else
+            catch(Exception e)
             {
-                return BadRequest(user.UserName + "\t not added");
+                return BadRequest("Exception is caught=>"+e);
             }
+           
         }
         [HttpGet("{userId}")]
         public async Task<ActionResult> GetUserByUserId(int userId)

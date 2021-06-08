@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FruitUserApi.Migrations
 {
     [DbContext(typeof(FruitVendorContext))]
-    [Migration("20210601195424_newMigration")]
-    partial class newMigration
+    [Migration("20210607150934_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -80,6 +80,28 @@ namespace FruitUserApi.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("FruitUserApi.Models.Feedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FruitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FeedbackId");
+
+                    b.ToTable("Feedbacks");
+                });
+
             modelBuilder.Entity("FruitUserApi.Models.Fruit", b =>
                 {
                     b.Property<int>("FruitId")
@@ -123,15 +145,17 @@ namespace FruitUserApi.Migrations
                     b.Property<decimal>("OrderAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("OrderDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderQty")
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -153,7 +177,7 @@ namespace FruitUserApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AdminId")
+                    b.Property<int?>("AdminId")
                         .HasColumnType("int");
 
                     b.Property<string>("PersonName")
@@ -167,16 +191,18 @@ namespace FruitUserApi.Migrations
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("PersonId");
 
                     b.HasIndex("AdminId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AdminId] IS NOT NULL");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Persons");
                 });
@@ -253,14 +279,12 @@ namespace FruitUserApi.Migrations
                     b.HasOne("FruitUserApi.Models.Admin", "Admin")
                         .WithOne("Person")
                         .HasForeignKey("FruitUserApi.Models.Person", "AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FruitUserApi.Models.User", "User")
                         .WithOne("Person")
                         .HasForeignKey("FruitUserApi.Models.Person", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Admin");
 

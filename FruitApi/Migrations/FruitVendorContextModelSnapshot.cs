@@ -78,6 +78,28 @@ namespace FruitUserApi.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("FruitUserApi.Models.Feedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FruitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FeedbackId");
+
+                    b.ToTable("Feedbacks");
+                });
+
             modelBuilder.Entity("FruitUserApi.Models.Fruit", b =>
                 {
                     b.Property<int>("FruitId")
@@ -121,15 +143,17 @@ namespace FruitUserApi.Migrations
                     b.Property<decimal>("OrderAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("OrderDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderQty")
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
