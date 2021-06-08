@@ -6,6 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            $(".spinner-grow").hide();
             $('#toggleNavBar').hide();//hide logout
             $('#btnAdminLogin').click(function () {
                 let userName = $('#userName').val();
@@ -17,6 +18,7 @@
                     data: JSON.stringify(item),
                     contentType: "application/json",
                     success: function (data, textStatus, xhr) {
+                        $(".spinner-grow").show();
                         console.log(data.result.token);
                         sessionStorage.setItem("jwtToken", data.result.token);
                         sessionStorage.setItem("userName", data.result.person.personName);
@@ -49,11 +51,11 @@
                 });
             });
             $(document).ajaxStart(function () {
-                $("#processDiv").show();
+                $(".spinner-grow").show();
             });
 
             $(document).ajaxStop(function () {
-                $("#processDiv").hide();
+                $(".spinner-grow").hide();
             });
         });
     </script>
@@ -175,7 +177,7 @@
             <h1>User Login</h1>
             <form method="" action="">
                 <div class="inputBox">
-                    <input type="text" name="username" id="userName" autocomplete="off" value="abc"required>
+                    <input type="text" name="username" id="userName" autocomplete="off" value="abc" required>
                     <label>  UserName </label>
                 </div>
                 <div class="inputBox">
@@ -194,7 +196,17 @@
 
     </div>
 
-    <div id="processDiv" style="display:none">Processing.....</div>
+    @*<div id="processDiv" style="display:none">Processing.....</div>*@
+
+    <div class="spinner-grow text-muted processDiv"></div>
+    <div class="spinner-grow text-primary processDiv"></div>
+    <div class="spinner-grow text-success processDiv"></div>
+    <div class="spinner-grow text-info processDiv"></div>
+    <div class="spinner-grow text-warning processDiv"></div>
+    <div class="spinner-grow text-danger processDiv"></div>
+    <div class="spinner-grow text-secondary processDiv"></div>
+    <div class="spinner-grow text-dark processDiv"></div>
+    <div class="spinner-grow text-light processDiv"></div>
 
 
     @section Scripts {

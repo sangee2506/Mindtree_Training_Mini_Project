@@ -72,11 +72,7 @@ namespace FruitUserApi.Data
 
         public DbSet<Order> Orders { get; set; }
 
-        
-
-
-
-
+        public DbSet<Feedback> Feedbacks { get; set; }
 
     }
 }

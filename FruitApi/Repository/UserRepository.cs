@@ -17,31 +17,13 @@ namespace FruitUserApi.Repository
             db = new FruitVendorContext();
         }
 
-        /*public List<Author> GetAllData()
-        {
-            return db.Authers.ToList();
-        }
-        [HttpGet]*/
         public async Task<List<User>> GetAllDataAsync()
         {
             return await db.Users.ToListAsync();
         }
-       /* internal bool CreateData(Author user)
-        {
-            if (user != null)
-            {
-                db.Authers.Add(user);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
-        }*/
+       
         public async Task<bool> CreateDataAsync(User user)
         {
-         
             if (user != null)
             {
                 db.Users.Add(user);
@@ -55,7 +37,7 @@ namespace FruitUserApi.Repository
             }
         }
 
-        internal async Task<User> GetDataByUserId(int userId)
+        public async Task<User> GetDataByUserId(int userId)
         {
             return await db.Users.FindAsync(userId);
         }
@@ -73,7 +55,7 @@ namespace FruitUserApi.Repository
             await db.SaveChangesAsync();
         }
 
-        internal async Task<bool> UpdateData(User user)
+        public async Task<bool> UpdateData(User user)
         {
             if (user != null)
             {
