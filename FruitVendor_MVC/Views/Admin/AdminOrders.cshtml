@@ -1,11 +1,10 @@
 ﻿<head>
     
     <script type="text/javascript">
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
         $(document).ready(function () {
-            let jwtToken = sessionStorage.getItem("jwtToken");
-            let userName = sessionStorage.getItem("userName");
-
-            $.ajax({
+             $.ajax({
                 type: "GET",
                 url: 'https://localhost:44329/api/AdminOrder',
                 dataType: 'json',
@@ -53,7 +52,7 @@
                 "</div>" +
                 "<div class='col-2'>" +
                 "<button type='button' " +
-                "onclick='deleteFruit(this)' " +
+                "onclick='goToViewDetails(this)' " +
                 "class='btn btn-secondary' " +
                 "data-id='" + order.orderId + "'>" +
                 "View Order Details" +
@@ -67,13 +66,24 @@
 
             return row;
         }
+        function goToViewDetails(orderId)
+        {
+            let id = $(orderId).data("id");
+            let url = "/Admin/AdminOrderDetails/" + id;
+            window.location.href = url;
+        }
 
     </script>
+    <style>
+        .card{
+            border:groove;
+        }
+    </style>
 </head>
 
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
 <div class="text-center" id="IndexPage" style="display:none">
-<div style="text-align:left" id="GetAllOrders"></div>
-
+    <div style="margin-top:20px" id="GetAllOrders"></div>
+    
 </div>

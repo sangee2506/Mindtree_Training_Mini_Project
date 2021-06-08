@@ -3,12 +3,29 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-    
+    <link href="~/css/Admin Css/AdminIndex.css" rel="stylesheet" />
     <script type="text/javascript">
+        var jwtToken = sessionStorage.getItem("jwtToken");
+        var imgURL = "";
+
+
         $(document).ready(function () {
-            let jwtToken = sessionStorage.getItem("jwtToken");
-            let userName = sessionStorage.getItem("userName");
-            
+
+            getAllFruits();
+
+            $(document).ajaxStart(function () {
+                $("#processDiv").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#processDiv").hide();
+            });
+
+
+        });
+
+        //get all fruits
+        function getAllFruits() {
             $.ajax({
                 type: "GET",
                 url: 'https://localhost:44329/api/AdminFruit',
@@ -18,7 +35,7 @@
                 dataType: 'json',
                 success: function (result, status, xhr) {
                     $("#IndexPage").show();
-                   // alert("successful " + result[0].name);
+                    // alert("successful " + result[0].name);
                     var FruitsTable = $('#GetAllFruits');
                     FruitsTable.empty();
                     $(result).each(function (index, fruit) {
@@ -30,10 +47,12 @@
                     $("#unAuthorised").show();
                 }
             });
-        });
+        }
+
+
         function AddFruitRow(fruit) {
             var row =
-                "<tr><td>" + "<img src='/Images/"+fruit.fruitImg +"' height='100px' width='100px'/>"+"</td>" +
+                "<tr><td>" + "<img src='/Images/" + fruit.fruitImg + "' height='100px' width='100px'/>" + "</td>" +
                 "<td>" + fruit.fruitId + "</td>" +
                 "<td>" + fruit.fruitName + "</td>" +
                 "<td>" + fruit.fruitPrice + "</td>" +
@@ -41,10 +60,10 @@
 
                 "<td>" +
                 "<button type='button' " +
-                "onclick='goToEditFruit(this)' " +
+                "onclick='editFruit(this)' " +
                 "class='btn btn-primary' " +
-                "data-id='" + fruit.fruitId+ "'>" +
-                "Update" +
+                "data-id='" + fruit.fruitId + "'>" +
+                "Edit" +
                 "</button>" +
                 "&nbsp;&nbsp;&nbsp;&nbsp" +
                 "<button type='button' " +
@@ -57,29 +76,136 @@
                 "</td></tr>";
             return row;
         }
-        //Delete Fruit 
-        function deleteFruit(fruit) {
-            var id = $(fruit).data("id");
 
-            $.ajax({
-                url: "https://localhost:44329/api/AdminFruit/" + id,
-                type: 'DELETE',
-                success: function (response) {
-                    $(fruit).parents("tr").remove();
-                },
-                error: function (xhr, message, error) {
-                    alert("Error:" + xhr.responseText)
-                }
+        //Delete Fruit
+        function deleteFruit(fruitId) {
+            var id = $(fruitId).data("id");
+            let fruit = getFruitById(id);
+            $('#deleteModal').modal('show');
+            $('#deleteMessg').text("Are you sure , you want to delete Fruit " + fruit.fruitName + " with Fruit Id " + fruit.fruitId + " ?");
+            //delete Fruit using modal
+            $('#btnDelete').click(function () {
+                $.ajax({
+                    url: "https://localhost:44329/api/AdminFruit/" + fruit.fruitId,
+                    type: 'DELETE',
+                    headers: {
+                        Authorization: 'Bearer ' + jwtToken
+                    },
+                    success: function (response) {
+                        $(fruitId).parents("tr").remove();
+                        $('#deleteModal').modal('hide');
+                    },
+                    error: function (xhr, message, error) {
+                        alert("Error:" + xhr.responseText)
+                    }
+                });
             });
         }
+
+        //preview Image
+        function readURL(input) {
+            console.log(input.files);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#previewImage')
+                        .attr('src', e.target.result)
+                        .width(100)
+                        .height(100);
+                    imgURL = reader.result;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+
+            }
+        }
+
+        //Edit Fruit
+        function editFruit(fruitId) {
+            let id = $(fruitId).data("id");
+            let fruit = getFruitById(id);
+            $('#fruitId').val(fruit.fruitId);
+            $('#name').val(fruit.fruitName);
+            $('#price').val(fruit.fruitPrice);
+            $('#qty').val(fruit.fruitQty);
+            $('#selectedImg').val("");
+            $('#previewImage').attr('src', '/Images/' + fruit.fruitImg);
+            $('#editFruitModal').modal('show');
+
+            //edit using modal
+            $('#btnEdit').click(function () {
+                let fruitId = $('#fruitId').val();
+                let name = $('#name').val();
+                let price = $('#price').val();
+                let qty = $('#qty').val();
+
+                imgURL = imgURL.replace('data:image/png;base64,', "");
+                console.log(imgURL);
+
+                let item = { fruitName: name, fruitPrice: price, fruitQty: qty, fruitImgFile: imgURL };
+                console.log(item);
+
+                $.ajax({
+                    url: "https://localhost:44329/api/AdminFruit/" + fruitId,
+                    type: 'PUT',
+                    data: JSON.stringify(item),
+                    headers: {
+                        Authorization: 'Bearer ' + jwtToken
+                    },
+                    contentType: "application/json",
+                    success: function (response, textStatus, xhr) {
+                        console.log(response);
+                        //  alert("Fruit  " + response.fruitName + " with Fruit Id " + response.fruitId + " updated");
+                        $('#editFruitModal').modal('hide');
+                        window.location.reload();
+
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Error Occured: " + xhr.responseText);
+                    }
+                });
+
+            });
+
+        }
+
+        //get Fruit By Id
+        function getFruitById(fruitId) {
+            let fruit = {};
+            $.ajax({
+                url: 'https://localhost:44329/api/AdminFruit/' + fruitId,
+                headers: {
+                    Authorization: 'Bearer ' + jwtToken
+                },
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                success: function (response) {
+                    fruit = response;
+                },
+
+                error: function (request, message, error) {
+                    alert("Error Occured: " + message);
+                }
+            });
+
+            return fruit;
+        }
+
+
     </script>
 </head>
 
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
 <div class="text-center" id="IndexPage" style="display:none">
-    <h3 style="align-self:center">Fruits available on Website</h3>
     <br />
+    <h3 style="align-self:center">Fruits available on Website</h3>
+
+    <div id="alert" class="alert alert-success alert-dismissible fade show" role="alert" style="display:none">
+
+    </div>
 
     <table class="table table-bordered">
         <tr>
@@ -95,29 +221,73 @@
 
 
     </table>
+</div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+<!--Loader--
+    <div id="processDiv" class="loader" style="display:none"></div>->
+
+    <!----Edit  Fruit Modal-->
+<div class="modal fade" id="editFruitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 text-center">
+                <h4 style="color:blueviolet">Edit Fruit Details</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column ">
+                    <form>
+                        <div class="form-group" hidden>
+                            <h6>FRUIT ID :</h6>
+                            <input type="text" class="form-control" id="fruitId">
+                        </div>
+                        <div class="form-group">
+                            <h6>FRUIT NAME :</h6>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <h6>FRUIT PRICE :</h6>
+                            <input type="number" class="form-control" id="price">
+                        </div>
+                        <div class="form-group">
+                            <h6>FRUIT QUANTITY :</h6>
+                            <input type="number" class="form-control" id="qty">
+                        </div>
+                        <div class="form-group">
+                            <input type='file' id="selectedImg" onchange="readURL(this)" />
+                            <img id="previewImage" src="#" alt="your image" height="100" width="100" />
+                        </div>
+                        <button type="button" class="btn btn-success btn-block btn-round" id="btnEdit">Save Changes</button>
+                    </form>
+
+
                 </div>
             </div>
+
         </div>
     </div>
 
+</div>
 
-
-
-
+<!----Delete Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 style="color:red" class="modal-title" id="exampleModalLabel">Delete Fruit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessg"></h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="btnDelete">Yes</button>
+            </div>
+        </div>
+    </div>
 </div>

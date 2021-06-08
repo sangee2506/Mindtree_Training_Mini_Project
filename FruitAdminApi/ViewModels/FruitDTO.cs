@@ -19,7 +19,7 @@ namespace FruitAdminApi.ViewModels
 
         public int FruitQty{ get; set; }
 
-        public string FruitImgFile { get; set; }
+        public string? FruitImgFile { get; set; }
 
         
 

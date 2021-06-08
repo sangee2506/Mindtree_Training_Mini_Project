@@ -47,10 +47,43 @@ namespace FruitAdminApi.Controllers
         }
         //edit fruit by id
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditFruitById(int id, Fruit model)
+        public async Task<IActionResult> EditFruitById(int id, [FromBody] FruitDTO model)
         {
-            Fruit fruit = await repo.EditFruitByIdAsync(id, model);
-            return Ok(fruit);
+            Fruit editedFruit = new Fruit();
+            if (model.FruitImgFile==null)
+            {
+                Fruit selectedFruit = repo.GetFruitById(id);
+                selectedFruit.FruitName=model.FruitName;
+                selectedFruit.FruitPrice = model.FruitPrice;
+                selectedFruit.FruitQty = model.FruitQty;
+                editedFruit = await repo.EditFruitByIdAsync(id,selectedFruit);
+            }
+            else
+            {
+                byte[] bytes = Convert.FromBase64String(model.FruitImgFile);
+                Image image;
+                using (MemoryStream ms = new MemoryStream(bytes))
+                {
+                    image = Image.FromStream(ms);
+                }
+
+                string[] path = new string[] { "Z:/FruitVendor/", "FruitVendor_MVC/", "wwwroot/", "Images/" };
+                string folderPath = Path.Combine(path);  //Create a Folder in your Root directory on your solution.
+                string fileName = Guid.NewGuid().ToString() + "img.png";
+                string imagePath = folderPath + fileName;
+                image.Save(imagePath);
+
+                Fruit obj = new Fruit()
+                {
+                    FruitName = model.FruitName,
+                    FruitPrice = model.FruitPrice,
+                    FruitQty = model.FruitQty,
+                    FruitImg = fileName
+                };
+                editedFruit = await repo.EditFruitByIdAsync(id, obj);
+                
+            }
+            return Ok(editedFruit);
         }
 
         // delete Fruit By id

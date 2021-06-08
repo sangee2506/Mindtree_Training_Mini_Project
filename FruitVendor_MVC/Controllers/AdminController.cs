@@ -23,5 +23,10 @@ namespace FruitVendor_MVC.Controllers
         {
             return View();
         }
+        public IActionResult AdminOrderDetails(int?id)
+        {
+            ViewBag.orderId = id;
+            return View();
+        }
     }
 }

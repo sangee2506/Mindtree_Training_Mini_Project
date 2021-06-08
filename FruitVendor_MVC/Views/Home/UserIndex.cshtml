@@ -73,52 +73,22 @@
         console.log("size of data=" + data.length);
 
         var products = "";
-
+        products = products + "<div class='row'>";
         for (var item = 0; item < data.length; item++) {
             console.log("loop fruit name=" + data[item].fruitName);
             /////////////  prod 1 //////////////////////
-            products = products + "<div class='row'>";
+            
             products = products + "<div class='col-xl-4'>";
             products = products + "<center>";
-            products = products + "<img src='/Images/" + data[item].fruitImg + ".png' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
+            products = products + "<img src='/Images/" + data[item].fruitImg + "' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
             products = products + "<p>" + data[item].fruitName + "</p>";
             products = products + "<p> <span>Price:<b>" + data[item].fruitPrice + "</b></span>   <span>Qty:<b>" + data[item].fruitQty + "</b></span> </p>";
             products = products + "<button class='btn-info' onclick='addToCart(" + data[item].fruitId + ")' >Add To Cart</button>";
-            products = products + "<center>";
+            products = products + "</center>";
             products = products + "</div>";
-
-            /////////////  prod 2 //////////////////////
-            if (item != data.length - 1) { item = item + 1; }
-            if (item >= data.length - 1) { break; }
-
-            products = products + "<div class='col-xl-4'>";
-            products = products + "<center>";
-            products = products + "<img src='/Images/" + data[item].fruitImg + ".png' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
-            products = products + "<p>" + data[item].fruitName + "</p>";
-            products = products + "<p> <span>Price:<b>" + data[item].fruitPrice + "</b></span>   <span>Qty:<b>" + data[item].fruitQty + "</b></span> </p>";
-            products = products + "<button class='btn-info' onclick='addToCart(" + data[item].fruitId + ")' >Add To Cart</button>";
-            products = products + "<center>";
-            products = products + "</div>";
-
-            /////////////  prod 3 //////////////////////
-            if (item != data.length - 1) { item = item + 1; }
-
-            if (item >= data.length - 1) { break; }
-            products = products + "<div class='col-xl-4'>";
-            products = products + "<center>";
-            products = products + "<img src='/Images/" + data[item].fruitImg + ".png' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
-            products = products + "<p>" + data[item].fruitName + "</p>";
-            products = products + "<p> <span>Price:<b>" + data[item].fruitPrice + "</b></span>   <span>Qty:<b>" + data[item].fruitQty + "</b></span> </p>";
-            products = products + "<button class='btn-info' onclick='addToCart(" + data[item].fruitId + ")' >Add To Cart</button>";
-            products = products + "<center>";
-            products = products + "</div>";
-
-            products = products + "</div>";//row
-
-            products = products + "<br>";
-            products = products + "<br>";
-
+             
         }//for
+        products = products + "</div>";
         $('#getProd').append(products);
     }//   ResponseForAjaxDisplayAllFruits
 
