@@ -17,8 +17,8 @@
                 <th> BillingAddress </th>
                 <th> FruitId </th>
                 <th> UserId </th>
+                <th> Status </th>
             </tr>
-
             <!--   your fruits are displayed here in responsive way     -->
         </table>
         <br />
@@ -80,12 +80,15 @@
             }
         });
     }
+
     function ResponseForAjaxGetAllOrders(data) {
         var netAmount = 0;
         $.each(data, function (index, trav) {
-            let row = "<tr>   <td>" + trav.orderId + "</td>    <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td> </tr > ";
-            $('#list').append(row);//Ability to manipulate DOM using jQuery
-            netAmount = netAmount + trav.orderAmount;
+            if (trav.status=="pending") {
+                let row = "<tr>   <td>" + trav.orderId + "</td>    <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td>  <td> " + trav.status + "</td> </tr > ";
+                $('#list').append(row);//Ability to manipulate DOM using jQuery
+                netAmount = netAmount + trav.orderAmount;
+            }           
         })
 
         var setNetAmount = "<span>" + netAmount + "</span>";

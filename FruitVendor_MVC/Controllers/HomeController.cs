@@ -74,6 +74,10 @@ namespace FruitVendor_MVC.Controllers
         {
             return View();
         }
+        public IActionResult logout()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

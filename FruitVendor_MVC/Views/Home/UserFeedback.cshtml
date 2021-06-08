@@ -1,23 +1,64 @@
 ﻿<head>
-    <!--Jquery CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    @*<script src="~/js/TokenValidator.js"></script>*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </head>
 <body>
-    <h1>User order</h1>
+    <h1>Your Feedback</h1>
 
-    <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
-    <div class="text-center" id="IndexPage">
-        <h1 class="display-4">Welcome</h1> <h1 id="userName"></h1>
-        <br />
+    <!--MODAL POPUP FOR ACCEPTING ADDRESS AND PAYMENT mETHOD-->
+    <div class="container">
+
+
+        <!-- Trigger the modal with a button -->
+        <div class="alert alert-success" id="toggleAddDetails">
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add New FeedBack</button>   <span id="msg">You can Add New Feedback</span>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content" style="background-color: aquamarine;">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Your Feedback:</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <p> <b>FruitId :</b> <input id="txtFruitId" /> </p>
+                            <p> <b>Message :</b> <input id="txtMessage" /> </p>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button onclick='validateCreateFeedBack()' type="button" class="btn-success" data-dismiss="modal">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+
+    <div id="list" class="container">
+
+    </div>
 </body>
 
 <script>
 
     $(document).ready(function () {
+        validateAjaxGetallFeedbacks();
+    });//ready
+
+    function validateAjaxGetallFeedbacks() {
         let jwtToken = sessionStorage.getItem("jwtToken");
         let userName = sessionStorage.getItem("userName");
         let userId = sessionStorage.getItem("userId");
@@ -26,20 +67,79 @@
         $('#userName').html(userName);
         $.ajax({
             type: "GET",
-            url: 'https://localhost:44339/api/Fruit',
+            url: 'https://localhost:44339/api/FeedBack/' + userId,
             headers: {
                 Authorization: 'Bearer ' + jwtToken
             },
             dataType: 'json',
-            success: function (result, status, xhr) {
-                alert('authorized');
-                Success();
+            success: function (data, userId) {
+               // alert('authorized');
+                ResposeForValidateAjaxGetallFeedbacks(data,userId);
             },
-            error: function (err) {
-                //alert('unauthorized');
-                $("#unAuthorised").show();
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+                //window.location.href = url;
             }
         });
-    });
+    }
+
+    function ResposeForValidateAjaxGetallFeedbacks(data,userId) {
+        let html = '';
+        $.each(data, function (index, trav) {
+            
+                html = html + '<div  class="alert alert-warning">';
+                html = html + '<h3> Fruit Id:' + trav.fruitId + '</h3>';
+                html = html + '<p>' + trav.message + '</p>';
+                html = html + '</div>';                                  
+        })
+        $('#list').append(html);
+    }
+
+    function validateCreateFeedBack() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+        var obj = {
+            UserId: userId,
+            Message: $('#txtMessage').val(),
+            FruitId: $('#txtFruitId').val()
+        };
+
+        $.ajax({
+            url: 'https://localhost:44339/api/FeedBack',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            type: 'POST',
+            data: JSON.stringify(obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                //alert('created feedback');
+                var url = "https://localhost:44350/home/userfeedback";
+                window.location.href = url;
+                $('#msg').val('new feedback is sent');
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+                //window.location.href = url;
+            }
+        });
+    }
 
 </script>

@@ -15,7 +15,7 @@ namespace FruitUserApi.Models
         [Required]
         public decimal OrderAmount { get; set; }
         [Required]
-        public string OrderDate { get; set; }//check
+        public DateTime OrderDate { get; set; }//check
         [Required]
         public string PaymentMethod{ get; set; }
         [Required]
@@ -26,7 +26,8 @@ namespace FruitUserApi.Models
         [Required]
         public int UserId { get; set; }//f.k
         public User User { get; set; }
-      
+
+        public string? Status { get; set; }//f.k
 
     }
 }
@@ -38,5 +39,4 @@ aId =int
 date=date
 pm=string
 placeAddress=string
- 
- */
+*/

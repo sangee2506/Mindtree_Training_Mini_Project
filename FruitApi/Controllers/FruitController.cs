@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FruitUserApi.Controllers
 {
-    [Authorize(Roles = "user")]
+   /* [Authorize(Roles = "user")]*/
     [Route("api/[controller]")]
     [ApiController]
     public class FruitController : ControllerBase

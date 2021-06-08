@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FruitUserApi.Migrations
 {
@@ -21,6 +22,21 @@ namespace FruitUserApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Admins", x => x.AdminId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feedbacks",
+                columns: table => new
+                {
+                    FeedbackId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FruitId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedbacks", x => x.FeedbackId);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,11 +108,12 @@ namespace FruitUserApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderQty = table.Column<int>(type: "int", nullable: false),
                     OrderAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    OrderDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BillingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FruitId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -124,8 +141,8 @@ namespace FruitUserApi.Migrations
                     PersonName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PersonPasswd = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false,defaultValue:-1),
-                    AdminId = table.Column<int>(type: "int", nullable: false,defaultValue:-1)
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    AdminId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -168,19 +185,24 @@ namespace FruitUserApi.Migrations
                 name: "IX_Persons_AdminId",
                 table: "Persons",
                 column: "AdminId",
-                unique: true);
+                unique: true,
+                filter: "[AdminId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Persons_UserId",
                 table: "Persons",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Feedbacks");
 
             migrationBuilder.DropTable(
                 name: "Orders");
