@@ -1,5 +1,4 @@
 ﻿
-
 @{
     ViewData["Title"] = "LoginUser";
 }
@@ -7,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
+            $('#toggleNavBar').hide();//hide logout
             $('#btnAdminLogin').click(function () {
                 let userName = $('#userName').val();
                 let password = $('#passwd').val();
@@ -23,7 +22,9 @@
                         sessionStorage.setItem("userName", data.result.person.personName);
                         sessionStorage.setItem("userId", data.result.person.userId);
                         sessionStorage.setItem("adminId", data.result.person.adminId);
+
                         sessionStorage.setItem("role", data.result.person.role);
+
 
                         if (sessionStorage.getItem("role") == "user") {
                             window.location.href = "/home/UserIndex";
@@ -31,12 +32,20 @@
                         else {
                             window.location.href = "/Admin/AdminIndex";
                         }
-
-
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        alert("Error Occured: " + xhr.responseText);
+                    error: function (request, message, errorThrown) {
+                        var msg = "";
+                        msg += "Code: " + request.status + "\n";
+                        msg += "Text: " + request.statusText + "\n";
+                        if (request.responseJSON != null) {
+                            msg += "Message" + request.responseJSON.Message + "\n";
+                        }
+                        alert(msg);
                     }
+                   @* error: function (xhr, textStatus, errorThrown) {
+                        alert("Error Occured: " + xhr.responseText);
+                        console.log();
+                    }*@
                 });
             });
             $(document).ajaxStart(function () {
@@ -47,50 +56,151 @@
                 $("#processDiv").hide();
             });
         });
-
-
-
-
     </script>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: lightblue;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .main_div {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            width: 500px;
+            height: 400px;
+            margin-left: 300px;
+            margin-top: 150px;
+        }
+
+        .box {
+            width: 400px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+        }
+
+            .box h1 {
+                margin-bottom: 30px;
+                color: #fff;
+                text-align: center;
+                text-transform: capitalize;
+            }
+
+            .box .inputBox {
+                position: relative;
+            }
+
+                .box .inputBox input {
+                    width: 100%;
+                    padding: 10px;
+                    font-size: 16px;
+                    color: #fff;
+                    letter-spacing: 1px;
+                    margin-bottom: 30px;
+                    border: none;
+                    border-bottom: 1px solid #fff;
+                    background: transparent;
+                    outline: none;
+                }
+
+                .box .inputBox label {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    letter-spacing: 1px;
+                    padding: 10px 0;
+                    font-size: 16px;
+                    color: #fff;
+                    transition: 0.5s;
+                }
+
+                .box .inputBox input:focus ~ label,
+                .box .inputBox input:valid ~ label {
+                    top: -20px;
+                    left: 0;
+                    color: #03a9f4;
+                    font-size: 12px;
+                }
+            /*.processDiv {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            align-self: flex-end;
+
+        }*/
+            .box input[type="button"] {
+                background: transparent;
+                border: none;
+                outline: none;
+                color: #fff;
+                background: #4c7b91;
+                padding: 8px 16px;
+                border: 5px;
+                font-size: 14px;
+                position: center;
+                margin-bottom: 10px;
+            }
+
+        .processdiv {
+            color: white;
+            width: 200px;
+            height: 25px;
+            margin-left: 500px;
+        }
+    </style>
 </head>
 
 
 
-<h1>LoginUser</h1>
+@*<h1>LoginUser</h1>
 
-<h4>UserTbl</h4>
+    <h4>UserTbl</h4>*@
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <table>
+<body>
+    <div class="main_div">
+        <div class="box">
+            <h1>User Login</h1>
+            <form method="" action="">
+                <div class="inputBox">
+                    <input type="text" name="username" id="userName" autocomplete="off" value="abc"required>
+                    <label>  UserName </label>
+                </div>
+                <div class="inputBox">
+                    <input type="password" name="password" id="passwd" autocomplete="off" value="pass" required>
+                    <label> Password </label>
+                </div>
+                <div>
+                    <input type="button" value="Login" id="btnAdminLogin" />
+                </div>
+            </form>
+            <div>
+                <a asp-action="UserSignUp">Not Yet Registered?</a>
+            </div>
 
-
-            <tr>
-                <td>UserName: </td>
-                <td><input type="text" id="userName" /></td>
-            </tr>
-            <tr>
-                <td>Password: </td>
-                <td><input type="text" id="passwd" /></td>
-            </tr>
-
-
-            <tr>
-                <td><input type="button" value="Login" id="btnAdminLogin" /></td>
-            </tr>
-
-        </table>
-
+        </div>
 
     </div>
-</div>
 
-<div id="processDiv" style="display:none">Processing.....</div>
+    <div id="processDiv" style="display:none">Processing.....</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>

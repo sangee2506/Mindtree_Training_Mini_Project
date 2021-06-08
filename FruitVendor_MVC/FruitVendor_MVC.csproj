@@ -7,11 +7,19 @@
   <ItemGroup>
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Home\UserCart.cshtml" />
+    <None Include="Views\Home\UserFeedback.cshtml" />
+    <None Include="Views\Home\UserIndex.cshtml" />
+    <None Include="Views\Home\UserOrder.cshtml" />
+    <None Include="Views\Home\UserSignIn.cshtml" />
+    <None Include="Views\Home\UserSignUp.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\js\User Scripts\ViewUserCartScript.js" />
+    <None Include="wwwroot\js\User Scripts\ViewUserIndexScript.js" />
   </ItemGroup>
 
   <ItemGroup>

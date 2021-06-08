@@ -1,0 +1,136 @@
+﻿
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+  @* <h1 id="getFruitId">Your Cart Id:@ViewBag.getFruitId</h1>*@
+    
+    <div id="hidden">
+        <input id="getFruitId" type="hidden" value="@ViewBag.getFruitId" />
+    </div>
+    <div class="container">
+        <h1>   <b id="setFruitName"></b>   </h1>
+
+        <div id="imgBar">
+            <div>
+                <p>
+                    What is Lorem Ipsum?
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. <br />
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s<br />
+                    when an unknown printer took a galley of type and scrambled it to make a type<br />
+                    specimen book. It has survived not only five centuries, but also the leap into <br />
+                    electronic typesetting, remaining essentially unchanged. It was popularised in <br />
+                    the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, <br />
+                    and more recently with desktop publishing software like Aldus PageMaker including versions<br />
+                    of Lorem Ipsum.<br />
+                </p>
+            </div>     
+        </div>
+        <div>
+            <p>  Fruit Price/Unit: <span id="setFruitPrice"></span>  </p>
+            <p>  Image: <span id="setFruitImage"></span>  </p>
+            <p></p>
+            <span>Select Qty</span><input id="getFruitQty" type="text" />  <span class="text-success" id="setFruitQty"> </span> <span class="text-success"> in stock</span>
+            <br />
+            <button id="addToCart">Add To Cart</button>
+        </div>      
+    </div>
+</body>
+
+<script>
+    $(document).ready(function () {
+
+        $('#addToCart').click(function () {
+            alert('btnclk');
+            ajaxCreateCart();
+        });
+        validateAjaxGetFruitById();
+    });
+
+    function validateAjaxGetFruitById() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        var getFruitId = $('#getFruitId').val();
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/Fruit/' + getFruitId,
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+                ResponseForValidateAjaxGetFruitById(data);
+               
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+                var url = "https://localhost:44350/";
+
+                window.location.href = url;
+            }
+        });
+    }
+
+    function ResponseForValidateAjaxGetFruitById(data)
+    {
+        $('#setFruitName').text(data.fruitName);
+        $('#setFruitPrice').text(data.fruitPrice);
+
+        $('#setFruitImage').text(data.fruitImg);
+        $('#getFruitQty').val(data.fruitQty);
+        $('#setFruitQty').text(data.fruitQty);
+        var img = "<img src='/Images/" + data.fruitImg + ".png' alt='HTML5 Icon' style='width: 200px; height: 200px;'>";
+        $('#imgBar').append(img);
+
+        let price = "<input id='hiddenFruitPrice' type='hidden' value=" + data.fruitPrice + " />";
+        $('#hidden').append(price);
+    }
+
+    function ajaxCreateCart() {
+        jQuery.support.cors = true;
+
+        var CartQty = $('#getFruitQty').val();
+        var priceUnit = $('#hiddenFruitPrice').val();
+        var CartAmount = priceUnit * CartQty;
+
+        var FruitId = $('#getFruitId').val();
+        let UserId = sessionStorage.getItem("userId");
+        alert(CartQty + '/' + priceUnit + '/' + CartAmount + '/' + FruitId + '/' + UserId);
+        var cart = {
+            CartQty: CartQty,
+            CartAmount: CartAmount,
+            FruitId: FruitId,
+            UserId: UserId,
+        };
+
+        $.ajax({
+            url: 'https://localhost:44339/api/Cart',
+            type: 'POST',
+            data: JSON.stringify(cart),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('add to your cart.......');
+                var url = "https://localhost:44350/home/UserIndex";
+
+                window.location.href = url;
+            },
+            error: function (err) {
+                alert('err');
+                alert(err.WriteResponse);
+            }
+        });    
+    }//ResponseForValidateAjaxGetFruitById
+</script>

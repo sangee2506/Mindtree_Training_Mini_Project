@@ -1,0 +1,117 @@
+﻿
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="hidden">
+        <input id="getCartId" type="hidden" value="@ViewBag.getCartId" />
+    </div>
+    <h1>Edit Cart Id:@ViewBag.getCartId</h1>
+
+    <div id="editCartForm" class="alert alert-info">
+
+        @*
+                Image
+            CartId
+            CartQty
+            CartAmount
+            FruitId
+            UserId
+        *@
+    </div>
+</body>
+
+<script>
+    $(document).ready(function () {
+        ajaxGetAllCart();
+    });
+
+    function ajaxGetAllCart() {
+        var getCartId = $('#getCartId').val();
+
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+
+        $.ajax({
+            url: 'https://localhost:44339/api/cart',
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+
+                responseForAjaxGetAllCart(data, getCartId);
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+            }
+        });
+    }
+
+    function responseForAjaxGetAllCart(data, getCartId) {
+        var html = "";
+        alert('getCartId=' + getCartId);
+        $.each(data, function (index, trav) {
+            if (trav.cartId == getCartId) {
+                html = html + '<h2>' + trav.fruitImg + '</h2>';
+                html = html + "<img src='/Images/" + trav.fruitImg + ".png' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
+                html = html + '<p> <input id="txtcartQty" type="text" value="' + trav.cartQty + '"/> </p>';
+                html = html + '<button id="btnEditCart" class="btn btn-info" onclick="ajaxUpdateCartQty(' + getCartId + ',' + trav.cartQty + ',' + trav.cartAmount + ',' + trav.fruitId + ',' + trav.userId+')">Edit</button>';
+            }
+        })
+        $('#editCartForm').append(html);
+    }
+
+    function ajaxUpdateCartQty(CartId, CartQty, CartAmount, FruitId, UserId) {
+        alert(CartId + '/' + CartQty + '/' + CartAmount + '/' + FruitId + '/' + UserId);
+        var txtcartQty = $('#txtcartQty').val();
+        alert('new qty=' + txtcartQty);
+
+        var obj = {
+            CartId: CartId,
+            CartQty: txtcartQty,
+            CartAmount: CartAmount,
+            FruitId: FruitId,
+            UserId: UserId
+        };
+
+        $.ajax({
+            url: 'https://localhost:44339/api/cart/' + CartId,
+            type: 'PUT',
+            data: JSON.stringify(obj),        //Convert Javascript object into Json
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('updated the cart qty');
+            },
+            error: function (request, message, errorThrown) {
+                alert('You are not authorized...Redirecting to sign in');
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+            }
+        });
+    }
+
+</script>
+
+@*  CartId /
+    CartQty /
+    CartAmount ?
+    FruitId ?
+    UserId/
+    
+*@

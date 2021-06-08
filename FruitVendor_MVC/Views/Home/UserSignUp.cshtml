@@ -1,0 +1,185 @@
+﻿@model FruitVendor_MVC.Models.User
+
+@{
+    ViewData["Title"] = "UserSignUp";
+}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: lightblue;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .main_div {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            width: 500px;
+            height: 400px;
+            margin-left: 300px;
+            margin-top: 150px;
+        }
+
+        .box {
+            width: 500px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+        }
+
+            .box h1 {
+                margin-bottom: 0px;
+                color: #fff;
+                text-align: center;
+                text-transform: capitalize;
+            }
+
+
+
+            .box .inputBox input {
+                width: 80%;
+                padding: 5px;
+                font-size: 16px;
+                color: #fff;
+                letter-spacing: 1px;
+                margin-bottom: 30px;
+                border: none;
+                border-bottom: 1px solid #fff;
+                background: transparent;
+                outline: none;
+                color: white;
+            }
+
+            .box input[type="button"] {
+                background: transparent;
+                border: none;
+                outline: none;
+                color: #fff;
+                background: #4c7b91;
+                padding: 8px 16px;
+                border: 5px;
+                font-size: 14px;
+                position: center;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="main_div">
+        <div style="padding:7px" class="box">
+            <h1>User SignUp</h1>
+            <form asp-action="UserSignUp">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group" style="margin:15px 15px">
+                    <label style="color:white" asp-for="UserName" class="control-label"></label>
+                    <input id="txtUserName" asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="margin:15px 15px">
+                    <label style="color:white" asp-for="UserPasswd" class="control-label"></label>
+                    <input id="txtUserPasswd" asp-for="UserPasswd" class="form-control" />
+                    <span asp-validation-for="UserPasswd" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="margin:15px 15px">
+                    <label style="color:white" asp-for="Gender" class="control-label"></label>
+                    <input id="txtGender" asp-for="Gender" class="form-control" />
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="margin:15px 15px">
+                    <label style="color:white" asp-for="Email" class="control-label"></label>
+                    <input id="txtEmail" asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="margin:15px 15px">
+                    <label style="color:white" asp-for="MobNum" class="control-label"></label>
+                    <input id="txtMobNum" asp-for="MobNum" class="form-control" />
+                    <span asp-validation-for="MobNum" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input id="btnCreate" style="margin-left:200px" type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+            <div style="margin-left:175px">
+                <a asp-action="UserSignIn">Already a Member?</a>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+
+</body>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnCreate").click(function () {
+           @* var txtUserName = $('#txtUserName').val();
+            var txtUserPasswd = $('#txtUserPasswd').val();
+            var txtGender = $('#txtGender').val();
+            var txtEmail = $('#txtEmail').val();
+            var txtMobNum = $('#txtMobNum').val();
+
+            console.log(txtUserPasswd);
+            alert(txtUserName + '/' + txtUserPasswd + '/' + txtGender + '/' + txtEmail + '/' + txtMobNum);
+*@
+            ajaxCreateUser();
+        });
+    });//ready
+
+
+    function ajaxCreateUser() {
+        jQuery.support.cors = true;
+        var txtUserName = $('#txtUserName').val();
+        var txtUserPasswd = $('#txtUserPasswd').val();
+        var txtGender = $('#txtGender').val();
+        var txtEmail = $('#txtEmail').val();
+        var txtMobNum = $('#txtMobNum').val();
+        var user = {
+            UserName: txtUserName,
+            UserPasswd: txtUserPasswd,
+            Gender: txtGender,
+            Email: txtEmail,
+            MobNum: txtMobNum
+        };
+
+        $.ajax({
+            url: 'https://localhost:44339/api/User',
+            type: 'POST',
+            data: JSON.stringify(user),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('created');
+            },
+            error: function (request, message, errorThrown) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.responseJSON != null) {
+                    msg += "Message" + request.responseJSON.Message + "\n";
+                }
+                alert(msg);
+            }
+        });
+    }
+
+
+
+</script>

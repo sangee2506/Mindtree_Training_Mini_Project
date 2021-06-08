@@ -19,9 +19,7 @@ namespace FruitUserApi.Models
         [Required]
         public string PaymentMethod{ get; set; }
         [Required]
-        public string BillingAddress { get; set; }
-
-        
+        public string BillingAddress { get; set; }       
         public int? FruitId { get; set; }//f.k
         public Fruit Fruit { get; set; }
 
