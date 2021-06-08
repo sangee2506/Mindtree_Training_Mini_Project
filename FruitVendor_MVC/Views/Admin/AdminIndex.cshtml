@@ -13,6 +13,7 @@
 
             getAllFruits();
 
+
             $(document).ajaxStart(function () {
                 $("#processDiv").show();
             });
@@ -20,6 +21,7 @@
             $(document).ajaxStop(function () {
                 $("#processDiv").hide();
             });
+            
 
 
         });
@@ -77,16 +79,20 @@
             return row;
         }
 
-        //Delete Fruit
+        //Delete Fruit Modal
         function deleteFruit(fruitId) {
             var id = $(fruitId).data("id");
             let fruit = getFruitById(id);
             $('#deleteModal').modal('show');
             $('#deleteMessg').text("Are you sure , you want to delete Fruit " + fruit.fruitName + " with Fruit Id " + fruit.fruitId + " ?");
-            //delete Fruit using modal
+            DeleteFruitAjax(id);
+        }
+        //Delete fruit through ajax
+        function DeleteFruitAjax(fruitId) {
+
             $('#btnDelete').click(function () {
                 $.ajax({
-                    url: "https://localhost:44329/api/AdminFruit/" + fruit.fruitId,
+                    url: "https://localhost:44329/api/AdminFruit/" + fruitId,
                     type: 'DELETE',
                     headers: {
                         Authorization: 'Bearer ' + jwtToken
@@ -94,7 +100,8 @@
                     success: function (response) {
                         $(fruitId).parents("tr").remove();
                         $('#deleteModal').modal('hide');
-                    },
+                        
+                     },
                     error: function (xhr, message, error) {
                         alert("Error:" + xhr.responseText)
                     }
@@ -139,9 +146,11 @@
                 let name = $('#name').val();
                 let price = $('#price').val();
                 let qty = $('#qty').val();
-
-                imgURL = imgURL.replace('data:image/png;base64,', "");
-                console.log(imgURL);
+                if (imgURL != null) {
+                    imgURL = imgURL.replace('data:image/png;base64,', "");
+                    console.log(imgURL);
+                }
+                
 
                 let item = { fruitName: name, fruitPrice: price, fruitQty: qty, fruitImgFile: imgURL };
                 console.log(item);
@@ -156,9 +165,10 @@
                     contentType: "application/json",
                     success: function (response, textStatus, xhr) {
                         console.log(response);
-                        //  alert("Fruit  " + response.fruitName + " with Fruit Id " + response.fruitId + " updated");
+                       
                         $('#editFruitModal').modal('hide');
-                        window.location.reload();
+                         window.location.reload(); 
+                        alert("Fruit  " + response.fruitName + " with Fruit Id " + response.fruitId + " updated");
 
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -223,8 +233,8 @@
     </table>
 </div>
 
-<!--Loader--
-    <div id="processDiv" class="loader" style="display:none"></div>->
+<!--Loader-->
+    <div id="processDiv" class="loader" style="display:none;"></div>
 
     <!----Edit  Fruit Modal-->
 <div class="modal fade" id="editFruitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -238,7 +248,7 @@
             </div>
             <div class="modal-body">
                 <div class="d-flex flex-column ">
-                    <form>
+                    <form id="editForm">
                         <div class="form-group" hidden>
                             <h6>FRUIT ID :</h6>
                             <input type="text" class="form-control" id="fruitId">
@@ -281,13 +291,18 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <p id="deleteMessg"></h6>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="btnDelete">Yes</button>
-            </div>
+           
+            <form id="deleteForm">
+                <div class="modal-body">
+                    <p id="deleteMessg"></p>
+                </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-danger" id="btnDelete">Yes</button>
+                    </div>
+            </form>
+
         </div>
     </div>
 </div>

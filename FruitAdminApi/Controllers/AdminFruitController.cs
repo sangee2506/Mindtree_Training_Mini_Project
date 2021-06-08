@@ -50,7 +50,7 @@ namespace FruitAdminApi.Controllers
         public async Task<IActionResult> EditFruitById(int id, [FromBody] FruitDTO model)
         {
             Fruit editedFruit = new Fruit();
-            if (model.FruitImgFile==null)
+            if (model.FruitImgFile=="")
             {
                 Fruit selectedFruit = repo.GetFruitById(id);
                 selectedFruit.FruitName=model.FruitName;
