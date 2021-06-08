@@ -1,4 +1,5 @@
-﻿using FruitUserApi.Models;
+﻿using FruitUserApi.CustomException;
+using FruitUserApi.Models;
 using FruitUserApi.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FruitUserApi.Controllers
 {
-    /*[Authorize(Roles = "user")]*/
+    [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -29,7 +30,7 @@ namespace FruitUserApi.Controllers
             return Ok(list);
         }
 
-        /*[AllowAnonymous]*/
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> CreateNewUser(User user)
         {
@@ -47,7 +48,7 @@ namespace FruitUserApi.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest("Exception is caught=>"+e);
+                return Ok("Ooops! Exception is caught=>"+e.Message);
             }
            
         }
@@ -62,24 +63,30 @@ namespace FruitUserApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(User user)
         {
-
-            if (user!=null)
+            try
             {
-                bool res = await repo.UpdateData(user);
-                if (res)
+                if (user != null)
                 {
-                    return Ok("Updated user Successfully");
+                    bool res = await repo.UpdateData(user);
+                    if (res)
+                    {
+                        return Ok("Updated user Successfully");
+                    }
+                    else
+                    {
+                        return BadRequest("User can not be updated due to bad data");
+                    }
                 }
                 else
                 {
-                    return BadRequest("User can not be updated due to bad data");
+                    throw new NullValuesException("Dear user Please Fill all fields :(");
                 }
-
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest("can not update with empty values");
+                return BadRequest("Ooops! Exception is caught=>" + e.Message);
             }
+
         }
     }
 }

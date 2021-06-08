@@ -169,19 +169,16 @@
                 $('#msg').text('Your Profile is Edited Successfully');
             },
             error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
-                var msg = "";
-                msg += "Code: " + request.status + "\n";
-                msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
-                }
-                alert(msg);
-                var url = "https://localhost:44350/";
-                window.location.href = url;
+              
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                } else {
+                    $('#msg').text(request.responseText);
+                }               
             }
         });
     }
 
-    
 </script>
