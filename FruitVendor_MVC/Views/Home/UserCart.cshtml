@@ -84,6 +84,7 @@
 </body>
 
 <script>
+    $('#toggleAdminNavBar').hide();//hide Nav Bar
     $(document).ready(function () {
 
         $("#btnOrder").click(function () {
@@ -135,7 +136,7 @@
     function ResponseForValidateAjaxGetCartByUserId(data) {
         var row = "";
         $.each(data, function (index, trav) {
-            row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + ".png' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>    <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId +")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";         
+            row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>    <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId +")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";         
         })
         $('#list').append(row);//Ability to manipulate DOM using jQuery
     }

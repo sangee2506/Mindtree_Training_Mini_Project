@@ -1,6 +1,10 @@
 ﻿
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
   @* <h1 id="getFruitId">Your Cart Id:@ViewBag.getFruitId</h1>*@
@@ -38,11 +42,12 @@
 </body>
 
 <script>
+    $('#toggleAdminNavBar').hide();//hide Nav Bar
     $(document).ready(function () {
 
         $('#addToCart').click(function () {
-            alert('btnclk');
-            ajaxCreateCart();
+@*            alert('btnclk');
+*@            ajaxCreateCart();
         });
         validateAjaxGetFruitById();
     });
@@ -92,7 +97,7 @@
         $('#setFruitImage').text(data.fruitImg);
         $('#getFruitQty').val(data.fruitQty);
         $('#setFruitQty').text(data.fruitQty);
-        var img = "<img src='/Images/" + data.fruitImg + ".png' alt='HTML5 Icon' style='width: 200px; height: 200px;'>";
+        var img = "<img src='/Images/" + data.fruitImg + "' alt='HTML5 Icon' style='width: 200px; height: 200px;'>";
         $('#imgBar').append(img);
 
         let price = "<input id='hiddenFruitPrice' type='hidden' value=" + data.fruitPrice + " />";
@@ -108,8 +113,8 @@
 
         var FruitId = $('#getFruitId').val();
         let UserId = sessionStorage.getItem("userId");
-        alert(CartQty + '/' + priceUnit + '/' + CartAmount + '/' + FruitId + '/' + UserId);
-        var cart = {
+@*        alert(CartQty + '/' + priceUnit + '/' + CartAmount + '/' + FruitId + '/' + UserId);
+*@        var cart = {
             CartQty: CartQty,
             CartAmount: CartAmount,
             FruitId: FruitId,

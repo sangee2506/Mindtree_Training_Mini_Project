@@ -48,7 +48,7 @@ namespace FruitUserApi.Controllers
             }
             catch(Exception e)
             {
-                return Ok("Ooops! Exception is caught=>"+e.Message);
+                return BadRequest("Ooops! Exception is caught=>"+e.Message);
             }
            
         }

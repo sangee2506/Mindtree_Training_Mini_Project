@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FruitApi\FruitUserApi.csproj" />
   </ItemGroup>
 

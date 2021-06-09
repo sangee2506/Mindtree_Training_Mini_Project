@@ -5,9 +5,13 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
+
+        $('#toggleAdminNavBar').hide();//hide Nav Bar
+        $('#toggleUserNavBar').hide();//hide Nav Bar
+
         $(document).ready(function () {
             $(".spinner-grow").hide();
-            $('#toggleNavBar').hide();//hide logout
+            $('#toggleUserNavBar').hide();//hide Nav Bar
             $('#btnAdminLogin').click(function () {
                 let userName = $('#userName').val();
                 let password = $('#passwd').val();
@@ -44,10 +48,7 @@
                         }
                         alert(msg);
                     }
-                   @* error: function (xhr, textStatus, errorThrown) {
-                        alert("Error Occured: " + xhr.responseText);
-                        console.log();
-                    }*@
+                  
                 });
             });
             $(document).ajaxStart(function () {
