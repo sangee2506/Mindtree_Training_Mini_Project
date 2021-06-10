@@ -3,17 +3,12 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    
 </head>
 <body>
     <h1>Your Cart</h1>
     <!--MODAL POPUP FOR ACCEPTING ADDRESS AND PAYMENT mETHOD-->
-    <div class="container">
+    <div class="container" id="toggleShippingDetails">
         <!--By Default Hidden-->
         <h4 id="toggleAddress" style="display:none"><span>Billing Address:</span>  <span id="getAddress"></span></h4>
         <h4 id="togglePayMethod" style="display:none"><span>Billing Method:</span>   <span id="getPayMethod"></span></h4>
@@ -27,7 +22,6 @@
         <div class="alert alert-success" id="toggleAddDetails">
             <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Shipping Details</button>
         </div>
-
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -68,29 +62,28 @@
         <table class="table table-bordered table-striped" id="list">
             <tr>
                 <th> Image </th>
+                <th> Fruit Name </th>
                 <th> Cart Qty </th>
                 <th> Cart Amount </th>
                 <th> Delete </th>
                 <th> Edit </th>
                 <th> User Id </th>
-               
             </tr>
             <!--   your fruits are displayed here in responsive way     -->
         </table>
+        <div class="alert alert-success" id="toggleMsg">
+            <span id="msg"></span>
+        </div>
     </div>
-
-
 
 </body>
 
 <script>
     $('#toggleAdminNavBar').hide();//hide Nav Bar
     $(document).ready(function () {
-
         $("#btnOrder").click(function () {
             ajaxCreateOrderByUserId();
         });
-
         validateAjaxGetCartByUserId();
     });
 
@@ -112,53 +105,76 @@
             success: function (data) {
                 ResponseForValidateAjaxGetCartByUserId(data);
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
+               
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-
-                window.location.href = url;
-            }
-            @*error: function (err) {
-                alert('You are not authorized...Redirecting to sign in');
-                var url = "https://localhost:44350/";
-
-                window.location.href = url;
-            }*@
+                else {
+                    alert(msg);
+                }                            
+            }      
         });
     }
     function ResponseForValidateAjaxGetCartByUserId(data) {
-        var row = "";
-        $.each(data, function (index, trav) {
-            row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>    <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId +")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";         
-        })
-        $('#list').append(row);//Ability to manipulate DOM using jQuery
+        if (data.length == 0) {
+            $('#msg').text("Nothing in the cart");
+            $('#toggleShippingDetails').hide();
+        } else {
+            var row = "";
+
+
+            $.each(data, function (index, trav) {
+                row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>   <td> " + trav.fruitName + "</td>  <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId + ")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";
+            })
+            $('#list').append(row);//Ability to manipulate DOM using jQuery
+        }      
     }
 
 
     function ajaxDeleteCartItem(CartId) {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
         $.ajax({
             url: 'https://localhost:44339/api/cart/'+CartId,
             type: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 alert('Deletion done ... ');
+                //validateAjaxGetCartByUserId();
                 window.location.href = "https://localhost:44350/home/UserCart";
             },
-            error: function (x, y, z) {
-                alert("Traveller Id not found");
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });
     }
 
     function ajaxCreateOrderByUserId() {
-       
+
+        @*let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");*@
 
         let userId = sessionStorage.getItem("userId");
         jQuery.support.cors = true;
@@ -180,21 +196,32 @@
         $.ajax({
             url: 'https://localhost:44339/api/Order/' + userId,
             type: 'POST',
+           @* headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },*@
             data: JSON.stringify(obj),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
-                alert('created Your Order');
+               @* alert('created Your Order');*@
                 var url = "https://localhost:44350/home/UserOrder";
 
                 window.location.href = url;
             },
-            error: function (err) {
-                alert('err');
-                alert(err.WriteResponse);
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });
     }
-
 
     function acceptDetailsForOrders() {
         var txtBillingAddress = $('#txtBillingAddress').val();
@@ -214,6 +241,5 @@
         var url = "/Home/UserCartEdit/?cartId=" + cartId;
         window.location.href = url;
     } 
-
 
 </script>

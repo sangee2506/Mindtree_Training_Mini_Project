@@ -1,5 +1,6 @@
 ﻿using FruitUserApi.Data;
 using FruitUserApi.Models;
+using FruitUserApi.Models.VM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,44 @@ namespace FruitUserApi.Repository
             return true;
         }
 
-        internal List<Order> GetAllDataByUserId(int userId)
+
+        internal List<OrderViewModel> GetAllDataByUserId(int userId)
+        {
+            List<Order> orderList = db.Orders.ToList();
+            List<Fruit> fruitList = db.Fruits.ToList();
+
+            List<OrderViewModel> orderReturn = new List<OrderViewModel>();
+
+            Fruit fruitItem = null;
+            OrderViewModel orderViewModelItem = null;
+
+            foreach (Order order in orderList)
+            {
+                if (order.UserId == userId)
+                {
+                    fruitItem = db.Fruits.Find(order.FruitId);
+                    orderViewModelItem = new OrderViewModel()
+                    {
+                        OrderId=order.OrderId,
+                        OrderQty=order.OrderQty,
+                        OrderAmount=order.OrderAmount,
+                        OrderDate=order.OrderDate,
+                        PaymentMethod=order.PaymentMethod,
+                        BillingAddress=order.BillingAddress,
+                        FruitId=fruitItem.FruitId,
+                        FruitName=fruitItem.FruitName,
+                        FruitImg=fruitItem.FruitImg,
+                        UserId=order.UserId,
+                        Status=order.Status
+                    };
+                    orderReturn.Add(orderViewModelItem);
+                }
+            }//forreach
+            return orderReturn;
+        }
+
+
+        /*internal List<Order> GetAllDataByUserId(int userId)
         {
             List<Order> orderList = db.Orders.ToList();
             List<Order> orderReturn = new List<Order>();
@@ -68,6 +106,6 @@ namespace FruitUserApi.Repository
                 }                            
             }
             return orderReturn;
-        }
+        }*/
     }
 }

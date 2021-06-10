@@ -1,24 +1,26 @@
 ﻿
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
 </head>
 <body>
     <div id="hidden">
         <input id="getCartId" type="hidden" value="@ViewBag.getCartId" />
     </div>
     <h1>Edit Cart Id:@ViewBag.getCartId</h1>
+    <center class="container">
+        <div id="editCartForm" class="alert alert-info">
 
-    <div id="editCartForm" class="alert alert-info">
-
-        @*
+            @*
                 Image
             CartId
             CartQty
             CartAmount
             FruitId
             UserId
-        *@
-    </div>
+            *@
+        </div>
+    </center>
+    
 </body>
 
 <script>
@@ -43,30 +45,32 @@
             },
             dataType: 'json',
             success: function (data) {
-
                 responseForAjaxGetAllCart(data, getCartId);
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
+                else {
+                    alert(msg);
+                }
             }
         });
     }
 
     function responseForAjaxGetAllCart(data, getCartId) {
         var html = "";
-        alert('getCartId=' + getCartId);
+       
         $.each(data, function (index, trav) {
             if (trav.cartId == getCartId) {
-                html = html + '<h2>' + trav.fruitImg + '</h2>';
-                html = html + "<img src='/Images/" + trav.fruitImg + ".png' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
-                html = html + '<p> <input id="txtcartQty" type="text" value="' + trav.cartQty + '"/> </p>';
+                html = html + '<h2>' + trav.fruitName + '</h2>';
+                html = html + "<img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
+                html = html + '<p> <b>Fruit Qty:</b><input id="txtcartQty" type="text" value="' + trav.cartQty + '"/> </p>';
                 html = html + '<button id="btnEditCart" class="btn btn-info" onclick="ajaxUpdateCartQty(' + getCartId + ',' + trav.cartQty + ',' + trav.cartAmount + ',' + trav.fruitId + ',' + trav.userId+')">Edit</button>';
             }
         })
@@ -74,9 +78,9 @@
     }
 
     function ajaxUpdateCartQty(CartId, CartQty, CartAmount, FruitId, UserId) {
-        alert(CartId + '/' + CartQty + '/' + CartAmount + '/' + FruitId + '/' + UserId);
+       @* alert(CartId + '/' + CartQty + '/' + CartAmount + '/' + FruitId + '/' + UserId);*@
         var txtcartQty = $('#txtcartQty').val();
-        alert('new qty=' + txtcartQty);
+        @*alert('new qty=' + txtcartQty);*@
 
         var obj = {
             CartId: CartId,
@@ -86,23 +90,36 @@
             UserId: UserId
         };
 
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
         $.ajax({
             url: 'https://localhost:44339/api/cart/' + CartId,
             type: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
             data: JSON.stringify(obj),        //Convert Javascript object into Json
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 alert('updated the cart qty');
+                var url = "https://localhost:44350/home/UserCart";
+                window.location.href = url;
+
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
+                else {
+                    alert(msg);
+                }
             }
         });
     }

@@ -39,6 +39,7 @@ namespace FruitUserApi.Repository
                     CartAmount = cart.CartAmount,
                     FruitId = cart.FruitId,
                     FruitImg = fruitItem.FruitImg,
+                    FruitName = fruitItem.FruitName,
                     UserId = cart.UserId
                 };
 
@@ -67,6 +68,7 @@ namespace FruitUserApi.Repository
                         CartAmount = cart.CartAmount,
                         FruitId = cart.FruitId,
                         FruitImg = fruitItem.FruitImg,
+                        FruitName= fruitItem.FruitName,
                         UserId = cart.UserId
                     };
                     cartViewModelList.Add(cartViewModelItem);

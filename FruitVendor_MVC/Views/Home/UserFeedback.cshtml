@@ -72,17 +72,18 @@
                // alert('authorized');
                 ResposeForValidateAjaxGetallFeedbacks(data,userId);
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-                //window.location.href = url;
+                else {
+                    alert(msg);
+                }
             }
         });
     }
@@ -123,17 +124,18 @@
                 window.location.href = url;
                 $('#msg').val('new feedback is sent');
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-                //window.location.href = url;
+                else {
+                    alert(msg);
+                }
             }
         });
     }

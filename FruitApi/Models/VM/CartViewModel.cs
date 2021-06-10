@@ -16,7 +16,9 @@ namespace FruitUserApi.Models.VM
         public decimal CartAmount { get; set; }
         public int? FruitId { get; set; }//f.k       
         public string FruitImg { get; set; }
-       
+
+        public string FruitName { get; set; }
+
         public int UserId { get; set; }//f.k
         
     }

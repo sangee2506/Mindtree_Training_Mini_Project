@@ -1,10 +1,6 @@
 ﻿
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
 </head>
 <body>
   @* <h1 id="getFruitId">Your Cart Id:@ViewBag.getFruitId</h1>*@
@@ -73,18 +69,18 @@
                 ResponseForValidateAjaxGetFruitById(data);
                
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-
-                window.location.href = url;
+                else {
+                    alert(msg);
+                }
             }
         });
     }
@@ -105,6 +101,11 @@
     }
 
     function ajaxCreateCart() {
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+
         jQuery.support.cors = true;
 
         var CartQty = $('#getFruitQty').val();
@@ -114,7 +115,7 @@
         var FruitId = $('#getFruitId').val();
         let UserId = sessionStorage.getItem("userId");
 @*        alert(CartQty + '/' + priceUnit + '/' + CartAmount + '/' + FruitId + '/' + UserId);
-*@        var cart = {
+*@       var cart = {
             CartQty: CartQty,
             CartAmount: CartAmount,
             FruitId: FruitId,
@@ -124,6 +125,9 @@
         $.ajax({
             url: 'https://localhost:44339/api/Cart',
             type: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
             data: JSON.stringify(cart),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
@@ -132,9 +136,18 @@
 
                 window.location.href = url;
             },
-            error: function (err) {
-                alert('err');
-                alert(err.WriteResponse);
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });    
     }//ResponseForValidateAjaxGetFruitById
