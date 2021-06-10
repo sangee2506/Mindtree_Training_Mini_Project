@@ -10,23 +10,22 @@ using FruitUserApi.Models;
 namespace FruitUserApi.Repository.Tests
 {
     [TestClass()]
-    public class UnitTest1
+    public class UserTest
     {
         [TestMethod()]
         public async Task TestGetDataByUserId()
         {
             UserRepository repo = new UserRepository();
-            User res = await repo.GetDataByUserId(1);
+            User res = await repo.GetDataByUserId(10);
             bool expected = true;
             bool actual = false;
 
-            if ( res!= null)
+            if (res != null)
             {
                 actual = true;
             }
 
-            Assert.AreEqual(expected,actual);
-                     
+            Assert.AreEqual(expected, actual);
 
             Console.WriteLine("GetDataByUserIdTest is passed with actual value=>");
         }
@@ -70,6 +69,59 @@ namespace FruitUserApi.Repository.Tests
             Assert.AreEqual(expected, actual);
 
             Console.WriteLine("TestCreateDataAsync is passed with actual value" + actual);
+        }
+
+        [TestMethod()]
+        public void UpdateQtyOfCartTest()
+        {
+            FruitUserApi.Models.Cart cart = new FruitUserApi.Models.Cart()
+            {
+                CartId = 1,
+                CartQty = 5,
+                CartAmount = 98,
+                FruitId = 1,
+                UserId = 10
+            };
+            CartRepository repo = new CartRepository();
+            bool actual = repo.UpdateQtyOfCart(cart);
+            bool expected = true;
+            Assert.AreEqual(expected, actual);
+
+            Console.WriteLine("TestUpdateDataTest is passed with actual value" + actual);
+        }
+
+        [TestMethod()]
+        public void GetAllDataTest()
+        {
+            CartRepository repo = new CartRepository();
+
+            int cnt = repo.GetAllData().Count();
+            bool expected = true;
+            bool actual = false;
+
+            if (cnt > 0)
+            {
+                actual = true;
+            }
+            Assert.AreEqual(expected, actual);
+            Console.WriteLine("GetDataByUserIdTest is passed with actual value=>");
+        }
+
+        [TestMethod()]
+        public void GetAllDataByUserIdTest()
+        {
+            CartRepository repo = new CartRepository();
+
+            int cnt = repo.GetAllDataByUserId(10).Count();
+            bool expected = true;
+            bool actual = false;
+
+            if (cnt > 0)
+            {
+                actual = true;
+            }
+            Assert.AreEqual(expected, actual);
+            Console.WriteLine("GetDataByUserIdTest is passed with actual value=>");
         }
     }
 }

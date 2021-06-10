@@ -1,5 +1,5 @@
 ﻿<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
 </head>
 <body>
     <center id="defaultHidden" style="display:none">
@@ -65,7 +65,8 @@
 
 </body>
 <script>
-    
+    $('#toggleAdminNavBar').hide();//hide Nav Bar
+   
     $(document).ready(function () {
         $('#process').hide();
         $('#defaultHidden').show();
@@ -95,18 +96,18 @@
             success: function (data) {
                 ResponseAjaxGetUserByUserId(data);
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-
-                window.location.href = url;
+                else {
+                    alert(msg);
+                }
             }
         });
     }
@@ -168,7 +169,7 @@
 
                 $('#msg').text('Your Profile is Edited Successfully');
             },
-            error: function (request, message, errorThrown) {
+            error: function (request) {
               
                 if (request.status == 401) {
                     alert('You are not authorized...Redirecting to sign in');

@@ -1,42 +1,43 @@
-﻿<head>
-    <!--Jquery CDN-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
-
+<head>
+   
 </head>
 <body>
-    <br />
-    <h3>User order</h3>
+    <h1>User order</h1>
     <div class="container">
-        <table class="table table-bordered table-striped" id="list">
-            <tr>
-                <th> OrderId </th>
-                <th> OrderQty </th>
-                <th> OrderAmount </th>
-                <th> OrderDate </th>
-                <th> PaymentMethod </th>
-                <th> BillingAddress </th>
-                <th> FruitId </th>
-                <th> User Id </th>
-                <th> Status </th>
-            </tr>
-            <!--   your fruits are displayed here in responsive way     -->
-        </table>
-        <br />
-        <center>
-            <div class="bg-info">
-                <h2>You have to pay   <b><span id="setNetAmount"></span></b></h2>
-                <br />
-                <button id="btnPaymentGateway" class="btn-success">Payment Gateway</button>
-            </div>
-        </center>
+        
+            <table class="table table-bordered table-striped" id="list">
+                <tr>
+                    <th> Image </th>
+                    <th> OrderId </th>
+                    <th> Fruit Name </th>
+                    <th> OrderQty </th>
+                    <th> OrderAmount </th>
+                    <th> OrderDate </th>
+                    <th> PaymentMethod </th>
+                    <th> BillingAddress </th>
+                    <th> FruitId </th>
+                    <th> UserId </th>
+                    <th> Status </th>
+                </tr>
+                <!--   your fruits are displayed here in responsive way     -->
+            </table>
+            <br />
+            <center>
+                <div class="bg-info">
+                    <h2>You have to pay   <b><span id="setNetAmount"></span></b></h2>
+                    <br />
+                    <button id="btnPaymentGateway" class="btn-success">Payment Gateway</button>
+                </div>
+            </center>
 
-       
+
 
     </div>
 
 </body>
 <script>
+    $('#toggleAdminNavBar').hide();//hide Nav Bar
+
     $(document).ready(function () {
         validateAjaxGetAllOrders();
       
@@ -63,21 +64,20 @@
             },
             dataType: 'json',
             success: function (data) {
-              
                 ResponseForAjaxGetAllOrders(data);
             },
-            error: function (request, message, errorThrown) {
-                alert('You are not authorized...Redirecting to sign in');
+            error: function (request) {
                 var msg = "";
                 msg += "Code: " + request.status + "\n";
                 msg += "Text: " + request.statusText + "\n";
-                if (request.responseJSON != null) {
-                    msg += "Message" + request.responseJSON.Message + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
                 }
-                alert(msg);
-                var url = "https://localhost:44350/";
-
-                window.location.href = url;
+                else {
+                    alert(msg);
+                }
             }
         });
     }
@@ -85,8 +85,8 @@
     function ResponseForAjaxGetAllOrders(data) {
         var netAmount = 0;
         $.each(data, function (index, trav) {
-            if (trav.status == "pending") {
-                let row = "<tr>   <td>" + trav.orderId + "</td>    <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td>  <td> " + trav.status + "</td> </tr > ";
+            if (trav.status=="pending") {
+                let row = "<tr>   <td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td> <td>" + trav.orderId + "</td>  <td> " + trav.fruitName + "</td>  <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td>  <td> " + trav.status + "</td> </tr > ";
                 $('#list').append(row);//Ability to manipulate DOM using jQuery
                 netAmount = netAmount + trav.orderAmount;
             }           
@@ -118,10 +118,18 @@
                
                 ResponseForAjaxUpdateFruitQty(data);
             },
-            error: function (err) {
-                alert('You are not authorized...Redirecting to sign in');
-                var url = "https://localhost:44350/";
-                window.location.href = url;
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });
     }
@@ -163,11 +171,18 @@
                // alert('ajaxGetFruitById');
                 ajaxUpdateFruitQtyOnPlaced(data,newQty);
             },
-            error: function (err) {
-                alert(err.responseText);
-                var url = "https://localhost:44350/";
-
-                @* window.location.href = url;*@
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });
     }//ajaxGetFruitById
@@ -211,8 +226,18 @@
 
                 window.location.href = url;*@
             },
-            error: function (err) {
-                console.log(err);
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
             }
         });
 

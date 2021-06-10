@@ -39,6 +39,7 @@ namespace FruitUserApi.Repository
                     CartAmount = cart.CartAmount,
                     FruitId = cart.FruitId,
                     FruitImg = fruitItem.FruitImg,
+                    FruitName = fruitItem.FruitName,
                     UserId = cart.UserId
                 };
 
@@ -47,7 +48,7 @@ namespace FruitUserApi.Repository
             return cartViewModelList;
         }
 
-        internal List<CartViewModel> GetAllDataByUserId(int userId)
+        public List<CartViewModel> GetAllDataByUserId(int userId)
         {
             List<Cart> cartList = db.Carts.ToList();
             List<Fruit> fruitList = db.Fruits.ToList();
@@ -67,6 +68,7 @@ namespace FruitUserApi.Repository
                         CartAmount = cart.CartAmount,
                         FruitId = cart.FruitId,
                         FruitImg = fruitItem.FruitImg,
+                        FruitName= fruitItem.FruitName,
                         UserId = cart.UserId
                     };
                     cartViewModelList.Add(cartViewModelItem);
@@ -75,7 +77,7 @@ namespace FruitUserApi.Repository
             return cartViewModelList;
         }
 
-        internal bool UpdateQtyOfCart(Cart cart)
+        public bool UpdateQtyOfCart(Cart cart)
         {
             if (cart != null)
             {

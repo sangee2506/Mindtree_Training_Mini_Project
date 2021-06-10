@@ -82,7 +82,7 @@ namespace FruitAdminApi.Controllers
                         image = Image.FromStream(ms);
                     }
 
-                    string[] path = new string[] { "Z:/FruitVendor/", "FruitVendor_MVC/", "wwwroot/", "Images/" };
+                     string[] path = new string[] { "D:/GitFruitVendor/", "FruitVendor_MVC/", "wwwroot/", "Images/" };
                     string folderPath = Path.Combine(path);  //Create a Folder in your Root directory on your solution.
                     string fileName = Guid.NewGuid().ToString() + "img.png";
                     string imagePath = folderPath + fileName;
@@ -142,7 +142,7 @@ namespace FruitAdminApi.Controllers
                     image = Image.FromStream(ms);
                 }
 
-                string[] path = new string[] { "Z:/FruitVendor/", "FruitVendor_MVC/", "wwwroot/", "Images/" };
+                string[] path = new string[] { "D:/GitFruitVendor/", "FruitVendor_MVC/","wwwroot/", "Images/" };
                 string folderPath = Path.Combine(path);  //Create a Folder in your Root directory on your solution.
                 string fileName = Guid.NewGuid().ToString() + "img.png";
                 string imagePath = folderPath + fileName;
@@ -163,9 +163,8 @@ namespace FruitAdminApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-           
-           
 
+ 
         }
     }
 }

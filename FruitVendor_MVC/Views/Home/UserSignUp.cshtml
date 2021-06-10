@@ -1,5 +1,4 @@
-﻿@model FruitVendor_MVC.Models.User
-
+﻿
 @{
     ViewData["Title"] = "UserSignUp";
 }
@@ -48,8 +47,6 @@
                 text-transform: capitalize;
             }
 
-
-
             .box .inputBox input {
                 width: 80%;
                 padding: 5px;
@@ -75,6 +72,9 @@
                 font-size: 14px;
                 position: center;
             }
+            input{
+                width:20px;
+            }
     </style>
 </head>
 <body>
@@ -82,41 +82,50 @@
     <div class="main_div">
         <div style="padding:7px" class="box">
             <h1>User SignUp</h1>
-            <form>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-group" style="margin:15px 15px">
-                    <label style="color:white" asp-for="UserName" class="control-label"></label>
-                    <input id="txtUserName" asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-                <div class="form-group" style="margin:15px 15px">
-                    <label style="color:white" asp-for="UserPasswd" class="control-label"></label>
-                    <input id="txtUserPasswd" asp-for="UserPasswd" class="form-control" />
-                    <span asp-validation-for="UserPasswd" class="text-danger"></span>
-                </div>
-                <div class="form-group" style="margin:15px 15px">
-                    <label style="color:white" asp-for="Gender" class="control-label"></label>
-                    <input id="txtGender" asp-for="Gender" class="form-control" />
-                    <span asp-validation-for="Gender" class="text-danger"></span>
-                </div>
-                <div class="form-group" style="margin:15px 15px">
-                    <label style="color:white" asp-for="Email" class="control-label"></label>
-                    <input id="txtEmail" asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group" style="margin:15px 15px">
-                    <label style="color:white" asp-for="MobNum" class="control-label"></label>
-                    <input id="txtMobNum" asp-for="MobNum" class="form-control" />
-                    <span asp-validation-for="MobNum" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input id="btnCreate" style="margin-left:200px" type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
+            <div class="form-group" style="margin:15px 15px">
+                <label style="color:white" class="control-label"></label>
+                <input id="txtUserName" class="form-control" placeholder="User Name" required />
+                @*<span asp-validation-for="UserPasswd" class="text-danger"></span>*@
+            </div>
+
+          
+
+            <div class="form-group" style="margin:15px 15px">
+                <label style="color:white" class="control-label"></label>
+                <input id="txtUserPasswd" class="form-control" placeholder="User Password" required />
+                @*<span asp-validation-for="UserPasswd" class="text-danger"></span>*@
+            </div>
+            <div class="form-group" style="margin:15px 15px">
+                <label style="color:white" class="control-label"></label>
+                <input id="txtGender" class="form-control" placeholder="Gender" required />
+                @*<span asp-validation-for="Gender" class="text-danger"></span>*@
+            </div>
+            <div class="form-group" style="margin:15px 15px">
+                <label style="color:white" class="control-label"></label>
+                <input id="txtEmail" class="form-control" placeholder="Email" required />
+                @* <span asp-validation-for="Email" class="text-danger"></span>*@
+            </div>
+            <div class="form-group" style="margin:15px 15px">
+                <label style="color:white" class="control-label"></label>
+                <input id="txtMobNum" class="form-control" type="tel" id="phone" name="phone" placeholder="123-45-678" pattern="[0-9]{3}[0-9]{2}[0-9]{3}" required><br><br>
+                <small>Format: 123-45-678</small><br><br>
+                @*  <span asp-validation-for="MobNum" class="text-danger"></span>*@
+            </div>
+            <div id="disp" class="alert alert-success" id="toggleAddDetails">
+                <span id="msg">You can Update Your Profile</span>
+            </div>
+            <div class="form-group">
+                @**@                    <button class="btn btn-primary" id="btnCreate" style="margin-left:200px" type="submit"> Create</button>
+                @*<input id="btnCreate" style="margin-left:200px" type="submit" value="Create" class="btn btn-primary" />*@
+            </div>
+
             <div style="margin-left:175px">
                 <a asp-action="UserSignIn">Already a Member?</a>
             </div>
+        </div>
+
+
         </div>
     </div>
 
@@ -127,22 +136,28 @@
 </body>
 
 <script>
-
+    $('#toggleAdminNavBar').hide();//hide Nav Bar
+    $('#toggleUserNavBar').hide();//hide Nav Bar
     $(document).ready(function () {
-
-          ajaxCreateUser();
-        
-    });//ready
-
-
-    function ajaxCreateUser() {
-
+        $('#disp').hide();
         $("#btnCreate").click(function () {
             var txtUserName = $('#txtUserName').val();
             var txtUserPasswd = $('#txtUserPasswd').val();
             var txtGender = $('#txtGender').val();
             var txtEmail = $('#txtEmail').val();
             var txtMobNum = $('#txtMobNum').val();
+            validateInputs(txtUserName, txtUserPasswd, txtGender, txtEmail, txtMobNum);
+            //ajaxCreateUser();
+        });
+    });
+    function ajaxCreateUser(txtUserName, txtUserPasswd, txtGender, txtEmail, txtMobNum) {
+
+            @*var txtUserName = $('#txtUserName').val();
+            var txtUserPasswd = $('#txtUserPasswd').val();
+            var txtGender = $('#txtGender').val();
+            var txtEmail = $('#txtEmail').val();
+            var txtMobNum = $('#txtMobNum').val();*@
+
             var user = {
                 UserName: txtUserName,
                 UserPasswd: txtUserPasswd,
@@ -157,23 +172,40 @@
                 data: JSON.stringify(user),
                 contentType: "application/json",
                 success: function (data) {
-                    alert("User created");
+
+                    console.log(data);
+
                     window.location.href = "/home/UserSignIn";
                 },
                 error: function (request, message, errorThrown) {
-                    var msg = "";
-                    msg += "Code: " + request.status + "\n";
-                    msg += "Text: " + request.statusText + "\n";
-                    if (request.responseJSON != null) {
-                        msg += "Message" + request.responseJSON.Message + "\n";
-                    }
-                    alert(msg);
+
+                    $('#disp').show();
+                    alert(request.responseText);
+                    $('#msg').text(request.responseText);
                 }
              });
-        });
-       
     }
+    function validateInputs(txtUserName,txtUserPasswd,txtGender,txtEmail,txtMobNum)
+    {
 
-
-
+        if (txtUserName == "" @*|| txtUserPasswd == "" || txtGender == "" || txtEmail == "" || txtMobNum == ""*@) {
+            $('#disp').show();
+            $('#msg').text("Enter Name");
+        } else if (txtUserPasswd == "") {
+            $('#disp').show();
+            $('#msg').text("Enter Password");
+        } else if (txtGender == "") {
+            $('#disp').show();
+            $('#msg').text("Enter Gender");
+        } else if (txtEmail == "") {
+            $('#disp').show();
+            $('#msg').text("Enter Email");
+        } else if (txtMobNum == "") {
+            $('#disp').show();
+            $('#msg').text("Enter Mobile Num");
+        }
+        else {
+            ajaxCreateUser(txtUserName, txtUserPasswd, txtGender, txtEmail, txtMobNum);
+        }
+    }
 </script>

@@ -52,8 +52,7 @@ namespace FruitAdminApi.Repository
                 throw new NullValueException("Order Id Cant be empty");
             }
             Order order = db.Orders.Include(x=>x.Fruit).Include(x=>x.User).SingleOrDefault(x => x.OrderId == id);
-            return order;
-            
+            return order;           
         }
 
 
