@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using FruitAdminApi.Custom_Exceptions;
 using System.Threading.Tasks;
 using System.Drawing;
 using Grpc.Core;
@@ -16,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FruitAdminApi.Controllers
 {
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminFruitController : ControllerBase
@@ -40,25 +41,99 @@ namespace FruitAdminApi.Controllers
 
         //Get Fruit Details By id
         [HttpGet("{id}")]
-        public IActionResult GetFruitById(int id)
+        public async Task<IActionResult> GetFruitById(int? id)
         {
-            Fruit fruit = repo.GetFruitById(id);
-            return Ok(fruit);
+            try
+            {
+                Fruit fruit = await repo.GetFruitById(id);
+                return Ok(fruit);
+            }
+            catch(NullValueException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         //edit fruit by id
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditFruitById(int id, [FromBody] FruitDTO model)
+        public async Task<IActionResult> EditFruitById(int? id, [FromBody] FruitDTO model)
         {
-            Fruit editedFruit = new Fruit();
-            if (model.FruitImgFile=="")
+            try
             {
-                Fruit selectedFruit = repo.GetFruitById(id);
-                selectedFruit.FruitName=model.FruitName;
-                selectedFruit.FruitPrice = model.FruitPrice;
-                selectedFruit.FruitQty = model.FruitQty;
-                editedFruit = await repo.EditFruitByIdAsync(id,selectedFruit);
+                Fruit editedFruit = new Fruit();
+                if (model.FruitImgFile == "")
+                {
+                    Fruit selectedFruit = await repo.GetFruitById(id);
+                    selectedFruit.FruitName = model.FruitName;
+                    selectedFruit.FruitPrice = model.FruitPrice;
+                    selectedFruit.FruitQty = model.FruitQty;
+                    editedFruit = await repo.EditFruitByIdAsync(id, selectedFruit);
+                }
+                else
+                {
+                    byte[] bytes = Convert.FromBase64String(model.FruitImgFile);
+                    Image image;
+                    using (MemoryStream ms = new MemoryStream(bytes))
+                    {
+                        image = Image.FromStream(ms);
+                    }
+
+                    string[] path = new string[] { "Z:/FruitVendor/", "FruitVendor_MVC/", "wwwroot/", "Images/" };
+                    string folderPath = Path.Combine(path);  //Create a Folder in your Root directory on your solution.
+                    string fileName = Guid.NewGuid().ToString() + "img.png";
+                    string imagePath = folderPath + fileName;
+                    image.Save(imagePath);
+
+                    Fruit obj = new Fruit()
+                    {
+                        FruitName = model.FruitName,
+                        FruitPrice = model.FruitPrice,
+                        FruitQty = model.FruitQty,
+                        FruitImg = fileName
+                    };
+                    editedFruit = await repo.EditFruitByIdAsync(id, obj);
+
+                }
+                return Ok(editedFruit);
             }
-            else
+            
+             catch (NullValueException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        // delete Fruit By id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFruitById(int? id)
+        {
+            try
+            {
+                bool status = await repo.DeleteFruitByIdAsync(id);
+                return Ok(status);
+            }
+            catch (NullValueException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        // Add Fruit
+        [HttpPost("")]
+        public async Task<IActionResult> AddFruit([FromBody]FruitDTO model)
+        {
+            try
             {
                 byte[] bytes = Convert.FromBase64String(model.FruitImgFile);
                 Image image;
@@ -80,47 +155,15 @@ namespace FruitAdminApi.Controllers
                     FruitQty = model.FruitQty,
                     FruitImg = fileName
                 };
-                editedFruit = await repo.EditFruitByIdAsync(id, obj);
-                
+
+                Fruit fruit = await repo.AddFruitAsync(obj);
+                return Ok(fruit);
             }
-            return Ok(editedFruit);
-        }
-
-        // delete Fruit By id
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFruitById(int id)
-        {
-            bool status = await repo.DeleteFruitByIdAsync(id);
-            return Ok(status);
-        }
-
-        // Add Fruit
-        [HttpPost("")]
-        public async Task<IActionResult> AddFruit([FromBody]FruitDTO model)
-        {
-            byte[] bytes = Convert.FromBase64String(model.FruitImgFile);
-            Image image;
-            using (MemoryStream ms = new MemoryStream(bytes))
+            catch(AlreadyExistsException ex)
             {
-                image = Image.FromStream(ms);
+                return BadRequest(ex.Message);
             }
-       
-            string[] path = new string[] {"Z:/FruitVendor/","FruitVendor_MVC/","wwwroot/", "Images/" };
-            string folderPath = Path.Combine(path);  //Create a Folder in your Root directory on your solution.
-            string fileName = Guid.NewGuid().ToString() + "img.png";
-            string imagePath = folderPath + fileName;
-            image.Save(imagePath);
-          
-             Fruit obj = new Fruit()
-             {
-                 FruitName = model.FruitName,
-                 FruitPrice = model.FruitPrice,
-                 FruitQty=model.FruitQty,
-                 FruitImg = fileName
-             };
-
-             Fruit fruit = await repo.AddFruitAsync(obj);
-             return Ok(fruit);
+           
            
 
         }

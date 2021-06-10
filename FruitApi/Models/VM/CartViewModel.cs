@@ -17,7 +17,7 @@ namespace FruitUserApi.Models.VM
         public int? FruitId { get; set; }//f.k       
         public string FruitImg { get; set; }
        
-        public int UserId { get; set; }//f.k
+        public int UserId{ get; set; }//changed
         
     }
 }

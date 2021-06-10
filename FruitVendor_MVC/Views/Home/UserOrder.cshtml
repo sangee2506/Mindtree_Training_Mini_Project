@@ -5,7 +5,8 @@
 
 </head>
 <body>
-    <h1>User order</h1>
+    <br />
+    <h3>User order</h3>
     <div class="container">
         <table class="table table-bordered table-striped" id="list">
             <tr>
@@ -16,7 +17,7 @@
                 <th> PaymentMethod </th>
                 <th> BillingAddress </th>
                 <th> FruitId </th>
-                <th> UserId </th>
+                <th> User Id </th>
                 <th> Status </th>
             </tr>
             <!--   your fruits are displayed here in responsive way     -->
@@ -84,7 +85,7 @@
     function ResponseForAjaxGetAllOrders(data) {
         var netAmount = 0;
         $.each(data, function (index, trav) {
-            if (trav.status=="pending") {
+            if (trav.status == "pending") {
                 let row = "<tr>   <td>" + trav.orderId + "</td>    <td> " + trav.orderQty + "</td>   <td> " + trav.orderAmount + "</td>  <td> " + trav.orderDate + "</td>  <td> " + trav.paymentMethod + "</td>  <td> " + trav.billingAddress + "</td> <td> " + trav.fruitId + "</td> <td> " + trav.userId + "</td>  <td> " + trav.status + "</td> </tr > ";
                 $('#list').append(row);//Ability to manipulate DOM using jQuery
                 netAmount = netAmount + trav.orderAmount;

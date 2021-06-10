@@ -10,13 +10,21 @@ namespace FruitUserApi.Models
     {
         [Key]
         public int FeedbackId { get; set; }
+
         [Required]
         public int UserId { get; set; }
+
         [Required]
         public string Message { get; set; }
+
         [Required]
         public int FruitId { get; set; }
-       
+
+        public Fruit Fruit { get; set; }
+
+        public User User { get; set; }
+
+
 
     }
 }

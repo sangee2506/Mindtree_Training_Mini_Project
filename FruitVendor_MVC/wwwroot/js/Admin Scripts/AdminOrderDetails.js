@@ -16,7 +16,8 @@ function getOrderDetails() {
             Authorization: 'Bearer ' + jwtToken
         },
         success: function (order, status, xhr) {
-            $("#IndexPage").show();
+            $('processing').hide();
+            $('#IndexPage').show();
             console.log(order);
             $('#orderId').text("OrderID : #"+order.orderId);
             $('#orderDate').text("Order Placed : " +order.orderDate);
@@ -24,6 +25,7 @@ function getOrderDetails() {
             $('#payMethod').text(order.paymentMethod);
             $('#orderQty').text(order.orderQty );
             $('#orderTotal').text(order.orderAmount);
+            $('#orderStatus').text(order.status);
 
 
             getProductDetails(order.fruit);

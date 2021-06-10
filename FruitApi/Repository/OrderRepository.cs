@@ -1,5 +1,6 @@
 ﻿using FruitUserApi.Data;
 using FruitUserApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace FruitUserApi.Repository
                     {
                         OrderQty = cart.CartQty,
                         OrderAmount = cart.CartAmount,
-                        OrderDate = System.DateTime.Now.Date,
+                        OrderDate = System.DateTime.Now,
                         PaymentMethod = order.PaymentMethod,
                         BillingAddress = order.BillingAddress,
                         FruitId = cart.FruitId,

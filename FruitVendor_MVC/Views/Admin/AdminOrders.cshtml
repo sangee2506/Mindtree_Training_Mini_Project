@@ -12,7 +12,7 @@
                     Authorization: 'Bearer ' + jwtToken
                 },
                 success: function (result, status, xhr) {
-                    $("#IndexPage").show();
+                    $('#processing').hide();
                     console.log(result);
                     var OrdersTable = $('#GetAllOrders');
                     OrdersTable.empty();
@@ -28,6 +28,14 @@
             });
         });
         function AddOrderRow(order) {
+            let orderDate = order.orderDate.substring(0, 8);
+            if (!order.fruit) {
+                let a = fruit;
+                a.fruitName = "Fruit Not Available";
+                a.fruitImg = "not-available.png";
+            }
+            
+
             var row =
                 "<div class='card'>" +
                 "<div class='card-header' style='text-align: left'>" +
@@ -35,11 +43,11 @@
                 "</div>" +
                 "<div class='card-body'>" +
                 "<div class='row'>"+
-                "<div class='col-2'>" +
-                "<img src='/Images/" + order.fruit.fruitImg + "' height='100px' width='100px' />" +
+                "<div class='col-2' id=imageDiv>" +
+                "<img id=image src='/Images/" + order.fruit.fruitImg + "' height='100px' width='100px' />" +
                 "</div>" +
-                "<div class='col-2'>" +
-                "<p>" +  "FRUIT : "+"<br>"+order.fruit.fruitName + "</p>" +
+                "<div class='col-2' id=fruitDiv>" +
+                "<p id=fruitName>" +  "FRUIT : "+"<br>"+order.fruit.fruitName + "</p>" +
                 "</div>" +
                 "<div class='col-2'>" +
                 "<p>" + "TOTAL : " + "<br>"+order.orderAmount+ "</p>" +
@@ -48,12 +56,12 @@
                 "<p>" + "SHIP TO : " + "<br>"  + order.user.userName + "</p>" +
                 "</div>" +
                 "<div class='col-2'>" +
-                "<p>" + "ORDER DATE : " + order.orderDate + "</p>" +
+                "<p>" + "ORDER DATE : " + "<br>" + orderDate + "</p>" +
                 "</div>" +
                 "<div class='col-2'>" +
                 "<button type='button' " +
                 "onclick='goToViewDetails(this)' " +
-                "class='btn btn-secondary' " +
+                "class='btn btn-info' " +
                 "data-id='" + order.orderId + "'>" +
                 "View Order Details" +
                 "</button>" +
@@ -75,15 +83,27 @@
 
     </script>
     <style>
-        .card{
-            border:groove;
+        .card {
+            border-block-color: #9494b8;
+            border-radius: 50px 50px;
         }
+
+        .card-header {
+            background-color: #9494b8;
+            color: white
+        }
+
+        p {
+            font-weight: 400;
+        }
+   
     </style>
 </head>
 
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
-<div class="text-center" id="IndexPage" style="display:none">
+    <h4 style="color:blueviolet;margin-top:20px;text-align:center">User's Orders</h4>
+    <div class="spinner-border text-danger" id="processing" style="margin-left:600px;margin-top:200px"> </div>
     <div style="margin-top:20px" id="GetAllOrders"></div>
-    
-</div>
+
+
