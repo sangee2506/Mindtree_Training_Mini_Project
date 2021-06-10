@@ -28,5 +28,11 @@ namespace FruitVendor_MVC.Controllers
             ViewBag.orderId = id;
             return View();
         }
+
+        public IActionResult AdminFeedbacks()
+        {
+            
+            return View();
+        }
     }
 }

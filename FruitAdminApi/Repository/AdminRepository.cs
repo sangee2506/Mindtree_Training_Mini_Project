@@ -1,5 +1,6 @@
 ﻿  using FruitUserApi.Data;
 using FruitUserApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,16 @@ namespace FruitAdminApi.Repository
         {
             Admin admin = db.Admins.Find(id);
             return admin;
+        }
+        //get user by id
+        public async Task<User> GetUserById(int userId)
+        {
+            return await db.Users.FindAsync(userId);
+        }
+        //get all feedbacks
+        public List<Feedback> GetAllFeedbacks()
+        {
+            return db.Feedbacks.Include(x=>x.Fruit).Include(x=>x.User).ToList();
         }
     }
 }

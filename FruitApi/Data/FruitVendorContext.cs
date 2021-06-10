@@ -58,6 +58,20 @@ namespace FruitUserApi.Data
            .HasForeignKey<Person>(ad => ad.AdminId)
            .OnDelete(DeleteBehavior.Cascade);
 
+            //one to one relationship of user-feedback, fruit-feedback
+           modelBuilder.Entity<Feedback>()
+          .HasOne<User>(s => s.User)
+          .WithMany(ad => ad.Feedbacks)
+          .HasForeignKey(ad => ad.UserId)
+          .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Feedback>()
+           .HasOne<Fruit>(s => s.Fruit)
+           .WithMany(ad => ad.Feedbacks)
+           .HasForeignKey(ad => ad.FruitId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+
         }
 
         public DbSet<User> Users { get; set; }

@@ -97,6 +97,10 @@ namespace FruitUserApi.Migrations
 
                     b.HasKey("FeedbackId");
 
+                    b.HasIndex("FruitId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Feedbacks");
                 });
 
@@ -254,6 +258,25 @@ namespace FruitUserApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FruitUserApi.Models.Feedback", b =>
+                {
+                    b.HasOne("FruitUserApi.Models.Fruit", "Fruit")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("FruitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FruitUserApi.Models.User", "User")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fruit");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FruitUserApi.Models.Order", b =>
                 {
                     b.HasOne("FruitUserApi.Models.Fruit", "Fruit")
@@ -298,12 +321,16 @@ namespace FruitUserApi.Migrations
                 {
                     b.Navigation("Carts");
 
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("FruitUserApi.Models.User", b =>
                 {
                     b.Navigation("Carts");
+
+                    b.Navigation("Feedbacks");
 
                     b.Navigation("Orders");
 

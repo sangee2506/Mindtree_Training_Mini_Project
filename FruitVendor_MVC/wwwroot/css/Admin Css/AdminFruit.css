@@ -1,0 +1,18 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    background-color: lightblue;
+    height: 100vh;
+}
+
+#fruit .container #fruit-row #fruit-column #fruit-box {
+    margin-top: 20px;
+    max-width: 650px;
+    height: 500px;
+    border: 5px solid #9C9C9C;
+    background-color: white;
+}
+
+    #fruit .container #fruit-row #fruit-column #fruit-box #fruit-form {
+        padding: 20px;
+    }

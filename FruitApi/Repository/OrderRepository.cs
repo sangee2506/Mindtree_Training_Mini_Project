@@ -1,4 +1,4 @@
-﻿using FruitUserApi.Data;
+using FruitUserApi.Data;
 using FruitUserApi.Models;
 using FruitUserApi.Models.VM;
 using System;

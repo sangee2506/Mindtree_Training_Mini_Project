@@ -21,8 +21,10 @@ namespace FruitAdminApi.Controllers
             repo = new AdminRepository();
         }
 
+       
+
         [HttpGet]
-        public ActionResult GetAllAdmins()
+        public IActionResult GetAllAdmins()
         {
             List<Admin> list = repo.GetAll();
             if (list.Count == 0)
@@ -60,6 +62,22 @@ namespace FruitAdminApi.Controllers
             
             
         }
+        //get user by id
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> GetUserByUserId(int userId)
+        {
+            User user = await repo.GetUserById(userId);
+            return Ok(user);
+        }
+        //get all feedbacks
+        [HttpGet("feedback")]
+        
+        public ActionResult GetAllFeedbacks()
+        {
+            List<Feedback> list = repo.GetAllFeedbacks();
+            return Ok(list);
+        }
+
 
 
     }

@@ -1,7 +1,8 @@
 ﻿using FruitAdminApi.Repository;
+using FruitAdminApi.ViewModels;
 using FruitUserApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using FruitAdminApi.Custom_Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FruitAdminApi.Controllers
 {
-    [Authorize(Roles = "admin")]
+   [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminOrderController : ControllerBase
@@ -25,16 +26,24 @@ namespace FruitAdminApi.Controllers
         [HttpGet("")]
         public IActionResult GetAllOrders()
         {
-            List<Order> orders = repo.GetAllOrders();
+            List<OrderDTO> orders = repo.GetAllOrders();
             return Ok(orders);
         }
 
         //Get Order Details By id
         [HttpGet("{id}")]
-        public IActionResult GetOrderById(int id)
+        public IActionResult GetOrderById(int? id)
         {
-            Order order= repo.GetOrderById(id);
-            return Ok(order);
+            try
+            {
+                Order order = repo.GetOrderById(id);
+                return Ok(order);
+            }
+            catch(NullValueException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

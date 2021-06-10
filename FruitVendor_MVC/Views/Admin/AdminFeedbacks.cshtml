@@ -1,0 +1,107 @@
+﻿
+<head>
+    <script type="text/javascript">
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: 'https://localhost:44329/api/admin/feedback',
+                dataType: 'json',
+                headers: {
+                    Authorization: 'Bearer ' + jwtToken
+                },
+                success: function (result, status, xhr) {
+                    $('#processing').hide();
+                    console.log(result);
+
+                   var FeedbacksTable = $('#GetAllFeedbacks');
+                   FeedbacksTable.empty();
+                    
+                   FeedbacksTable.append(AddFeedbackCard(result))
+                   
+
+                },
+                error: function (xhr, status, error) {
+                    //alert("Error:" + xhr.responseText);
+                    $("#unAuthorised").show();
+                }
+            });
+        });
+        function AddFeedbackCard(feedbacks)
+        {
+            let products = "";
+           
+            products += "<div class='row'>";
+            
+            for (let i of feedbacks)
+            {
+                console.log(i);
+                 
+                products +=
+                    "<div class='col-md-4'>" +
+                    "<div class='card'>" +
+                    "<div class='card-header' style='text-align: left'>" +
+                    "USER ID: #" + i.userId  +"<br>"+
+                    "User Name: " + i.user.userName  +
+                     
+                       "</div>" +
+                       "<div class='card-body justify-content-center text-center'>" +
+                       "<h6 class='card-title'>" + "Fruit Name : " + i.fruit.fruitName + "</h6>" +
+
+                       "<img src='/Images/" + i.fruit.fruitImg + "' height='100px' width='100px' />" +
+
+                      "<p class='card-text'>" + "Feedback : " + i.message +  "</p>"+
+                       "</div>" +
+                       " </div>" +
+                       "</div>";
+            }
+            products += "</div>";
+            products +=   "<br>";
+
+            return products;
+          
+        }
+     
+    </script>
+
+    <style>
+        .card {
+            border-block-color: #9494b8;
+            border-radius: 50px 50px;
+        }
+        .card-header {
+            background-color: #9494b8;
+            color: white
+        }
+        p{
+            font-weight:500;
+        }
+    </style>
+</head>
+
+
+
+
+<h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
+
+
+    <div style="margin-top:20px">
+        <h4 style="color:blueviolet;text-align:center">User's Feedback</h4>
+        <br />
+
+        <div class="spinner-border text-danger" id="processing" style="margin-left:600px;margin-top:200px"> </div>
+
+        <div id="GetAllFeedbacks">
+
+        </div>
+
+
+
+    </div>
+
+
+    
+
+
+

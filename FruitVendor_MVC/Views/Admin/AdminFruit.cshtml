@@ -8,7 +8,7 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-
+    <link href="~/css/Admin Css/AdminFruit.css" rel="stylesheet" />
     <script type="text/javascript">
         var imgURL = "";
         $(document).ready(function () {
@@ -45,7 +45,7 @@
                     },
                     success: function (result, status, xhr) {
 
-                        alert("Fruit " + result.fruitName+ " added to the website");
+                        alert("Fruit " + result.fruitName + " added to the website");
                         window.location.reload();
 
                     },
@@ -84,30 +84,39 @@
 
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
-<div class="text-center" id="IndexPage" style="display:none">
+<div id="fruit">
 
-    <div class="submain">
+    <div class="container">
+        <div id="fruit-row" class="row justify-content-center align-items-center">
+            <div id="fruit-column" class="col-md-6">
+                <div id="fruit-box" class="col-md-12">
+                    <form id="fruit-form" class="form">
 
-        <div class="row">
+                        <div class="form-group">
+                            <label for="Fruitname" class="text-dark">Fruitname:</label><br>
+                            <input type="text" name="Fruitname" id="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="FruitPrice" class="text-dark">FruitPrice:</label><br>
+                            <input type="text" name="price" id="Fruitname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="Quantity" class="text-dark">Quantity:</label><br>
+                            <input type="text" name="Quantity" id="quantity" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label  class="text-dark">Upload Image:</label><br>
+                            <input type='file' id="selectedImg" onchange="readURL(this)" />
+                            <img id="previewImage" src="#" alt="your image" />
+                        </div>
 
-            Fruitname:<input type="text" id="name">
-        </div>
-        <div class="row">
-            FruitPrice:<input type="number" step="any" min="0 " id="price">
-        </div>
-        <div class="row">
-            Quantity:<input type="number" id="quantity">
-        </div>
-        <div class="row">
-            <input type='file' id="selectedImg" onchange="readURL(this)" />
-            <img id="previewImage" src="#" alt="your image" />
-        </div>
+                        <button type="button"  id="addFruit" class="btn btn-success btn-lg" >Submit</button>
 
-        <div class="row d-flex justify-content-center">
-            <button type="submit" id="addFruit" class="btn btn-success">Submit</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
 
 

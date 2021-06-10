@@ -19,6 +19,11 @@ namespace FruitVendor_MVC.Controllers
             _logger = logger;
         }
 
+        public IActionResult HomePage()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             return View();

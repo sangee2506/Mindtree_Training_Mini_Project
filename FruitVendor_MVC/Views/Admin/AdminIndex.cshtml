@@ -14,16 +14,6 @@
             getAllFruits();
 
 
-            $(document).ajaxStart(function () {
-                $("#processDiv").show();
-            });
-
-            $(document).ajaxStop(function () {
-                $("#processDiv").hide();
-            });
-            
-
-
         });
 
         //get all fruits
@@ -36,8 +26,7 @@
                 },
                 dataType: 'json',
                 success: function (result, status, xhr) {
-                    $("#IndexPage").show();
-                    // alert("successful " + result[0].name);
+                    $('#processing').hide();
                     var FruitsTable = $('#GetAllFruits');
                     FruitsTable.empty();
                     $(result).each(function (index, fruit) {
@@ -84,7 +73,7 @@
             var id = $(fruitId).data("id");
             let fruit = getFruitById(id);
             $('#deleteModal').modal('show');
-            $('#deleteMessg').text("Are you sure , you want to delete Fruit " + fruit.fruitName + " with Fruit Id " + fruit.fruitId + " ?");
+            $('#deleteMessg').text("Are you sure you want to delete Fruit " + fruit.fruitName + " with Fruit Id " + fruit.fruitId + " ?");
             DeleteFruitAjax(id);
         }
         //Delete fruit through ajax
@@ -100,8 +89,9 @@
                     success: function (response) {
                         $(fruitId).parents("tr").remove();
                         $('#deleteModal').modal('hide');
-                        
-                     },
+                        window.location.reload();
+
+                    },
                     error: function (xhr, message, error) {
                         alert("Error:" + xhr.responseText)
                     }
@@ -150,7 +140,7 @@
                     imgURL = imgURL.replace('data:image/png;base64,', "");
                     console.log(imgURL);
                 }
-                
+
 
                 let item = { fruitName: name, fruitPrice: price, fruitQty: qty, fruitImgFile: imgURL };
                 console.log(item);
@@ -165,9 +155,9 @@
                     contentType: "application/json",
                     success: function (response, textStatus, xhr) {
                         console.log(response);
-                       
+
                         $('#editFruitModal').modal('hide');
-                         window.location.reload(); 
+                        window.location.reload();
                         alert("Fruit  " + response.fruitName + " with Fruit Id " + response.fruitId + " updated");
 
                     },
@@ -209,34 +199,35 @@
 
 <h1 class="text-center" id="unAuthorised" style="display:none"> you are not authorised to view this page</h1>
 
-<div class="text-center" id="IndexPage" style="display:none">
-    <br />
-    <h3 style="align-self:center">Fruits available on Website</h3>
 
-    <div id="alert" class="alert alert-success alert-dismissible fade show" role="alert" style="display:none">
+<br />
+<h3 style="text-align:center">Fruits available on Website</h3>
 
-    </div>
+<br />
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Fruit Image</th>
-            <th> Fruit Id</th>
-            <th> Fruit Name</th>
-            <th>Fruit Price</th>
-            <th>Fruit Quantity</th>
-            <th>Actions</th>
+<table class="table table-bordered">
+    <tr>
+        <th>Fruit Image</th>
+        <th> Fruit Id</th>
+        <th> Fruit Name</th>
+        <th>Fruit Price</th>
+        <th>Fruit Quantity</th>
+        <th>Actions</th>
 
-        </tr>
-        <tbody id="GetAllFruits"></tbody>
+    </tr>
+
+    <tbody id="GetAllFruits">
+    </tbody>
 
 
-    </table>
-</div>
+</table>
+<div class="spinner-border text-danger" id="processing" style="margin-left:500px;margin-top:200px"> </div>
+
 
 <!--Loader-->
-    <div id="processDiv" class="loader" style="display:none;"></div>
+<div id="processDiv" class="loader" style="display:none;"></div>
 
-    <!----Edit  Fruit Modal-->
+<!----Edit  Fruit Modal-->
 <div class="modal fade" id="editFruitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -286,21 +277,21 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 style="color:red" class="modal-title" id="exampleModalLabel">Delete Fruit</h5>
+                <h5 style="color:red" class="modal-title" id="exampleModalLabel">Delete Fruit Confirmation</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-           
+
             <form id="deleteForm">
                 <div class="modal-body">
                     <p id="deleteMessg"></p>
                 </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                        <button type="submit" class="btn btn-danger" id="btnDelete">Yes</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-danger" id="btnDelete">Yes</button>
+                </div>
             </form>
 
         </div>
