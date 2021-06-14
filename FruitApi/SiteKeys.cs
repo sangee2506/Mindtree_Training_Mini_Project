@@ -16,5 +16,6 @@ namespace FruitUserApi
 
         public static string WebSiteDomain => _configuration["WebSiteDomain"];
         public static string Key => _configuration["Secret"];
+    
     }
 }

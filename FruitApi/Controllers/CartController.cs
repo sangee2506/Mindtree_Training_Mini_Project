@@ -41,15 +41,25 @@ namespace FruitUserApi.Controllers
         [HttpPost]
         public ActionResult CreateCart(Cart cart)
         {
-           bool res = repo.CreateData(cart);
-            if (res)
+
+            try
             {
-                return Ok("added");
+                bool res = repo.CreateData(cart);
+                if (res)
+                {
+                    return Ok("added");
+                }
+                else
+                {
+                    return BadRequest("not added");
+                }
             }
-            else
+            catch(Exception e)
             {
-                return BadRequest("not added");
-            }          
+                return BadRequest(e.Message);
+            }
+
+               
         }
 
         // DELETE api/<TravellerController>/5

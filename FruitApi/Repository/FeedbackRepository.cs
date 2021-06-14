@@ -34,7 +34,7 @@ namespace FruitUserApi.Repository
 
         }
 
-        internal List<Feedback> GetAllDataById(int userId)
+        public List<Feedback> GetAllDataById(int userId)
         {
             List<Feedback> feedbackList = db.Feedbacks.ToList();
             List<Feedback> res = new List<Feedback>();

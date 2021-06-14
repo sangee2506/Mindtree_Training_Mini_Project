@@ -1,3 +1,4 @@
+using FruitUserApi.CustomException;
 using FruitUserApi.Data;
 using FruitUserApi.Models;
 using FruitUserApi.Models.VM;
@@ -21,39 +22,47 @@ namespace FruitUserApi.Repository
             return db.Orders.ToList();
         }
 
-        internal bool CreateData(int userId, Order order)
+        public bool CreateData(int userId, Order order)
         {
-           List<Cart> cartList= db.Carts.ToList();
-           
-           foreach(Cart cart in cartList)
+            if (order.BillingAddress != "")
             {
-                if (userId == cart.UserId)
-                {
-                    Order obj = new Order()
-                    {
-                        OrderQty = cart.CartQty,
-                        OrderAmount = cart.CartAmount,
-                        OrderDate = System.DateTime.Now.Date,
-                        PaymentMethod = order.PaymentMethod,
-                        BillingAddress = order.BillingAddress,
-                        FruitId = cart.FruitId,
-                        UserId = cart.UserId,
-                        Status = "pending"
-                    };
-                    db.Orders.Add(obj);
-                    db.SaveChanges();
-                }                      
-            }
+                List<Cart> cartList = db.Carts.ToList();
 
-            foreach (Cart cart in cartList)
-            {
-                if (userId == cart.UserId)
+                foreach (Cart cart in cartList)
                 {
-                    db.Carts.Remove(cart);
-                    db.SaveChanges();
-                }           
+                    if (userId == cart.UserId)
+                    {
+                        Order obj = new Order()
+                        {
+                            OrderQty = cart.CartQty,
+                            OrderAmount = cart.CartAmount,
+                            OrderDate = System.DateTime.Now.Date,
+                            PaymentMethod = order.PaymentMethod,
+                            BillingAddress = order.BillingAddress,
+                            FruitId = cart.FruitId,
+                            UserId = cart.UserId,
+                            Status = "pending"
+                        };
+                        db.Orders.Add(obj);
+                        db.SaveChanges();
+                    }
+                }
+
+                foreach (Cart cart in cartList)
+                {
+                    if (userId == cart.UserId)
+                    {
+                        db.Carts.Remove(cart);
+                        db.SaveChanges();
+                    }
+                }
+                return true;
             }
-            return true;
+            else
+            {
+                throw new NullValuesException("Billing address is required");
+            }
+           
         }
 
 

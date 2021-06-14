@@ -3,9 +3,19 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-    
+
+    <link href="~/css/User Css/bgStyle.css" rel="stylesheet" />
+    <style>
+        body {
+            background: url('/Images/bg7.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+    </style>
 </head>
 <body>
+    <br />
     <h1>Your Cart</h1>
     <!--MODAL POPUP FOR ACCEPTING ADDRESS AND PAYMENT mETHOD-->
     <div class="container" id="toggleShippingDetails">
@@ -15,12 +25,12 @@
 
         <!--By Default Hidden-->
         <p id="togglePlaceOrder" style="display:none">
-            <button id="btnOrder" class="btn btn-success">Place Order</button>
+            <button id="btnOrder" class="btn btn-success"><i class="far fa-check-circle"></i>  Place Order</button>
         </p>
 
         <!-- Trigger the modal with a button -->
         <div class="alert alert-success" id="toggleAddDetails">
-            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Shipping Details</button>
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><i class="fas fa-plus-square"></i> Add Shipping Details</button>
         </div>
 
         <!-- Modal -->
@@ -56,7 +66,8 @@
             </div>
         </div>
     </div>
-    
+
+    <i class="fa fa-pencil" ></i>
 
     <div class="container">
         <table class="table table-bordered table-striped" id="list">
@@ -79,7 +90,7 @@
 </body>
 
 <script>
-    $('#toggleAdminNavBar').hide();//hide Nav Bar
+   @* $('#toggleAdminNavBar').hide();//hide Nav Bar*@
     $(document).ready(function () {
         $("#btnOrder").click(function () {
             ajaxCreateOrderByUserId();
@@ -130,7 +141,18 @@
 
 
             $.each(data, function (index, trav) {
-                row = row + "<tr>   <td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td>   <td> " + trav.fruitName + "</td>  <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td>  <td> <button  onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>Delete</button> <td> <button onclick='editCartItem(" + trav.cartId + ")' class='btn-info'>Edit</button> </td>  <td> " + trav.userId + "</td> </tr > ";
+                row = row + "<tr>  " +
+                    "<td>  <img src='/Images/" + trav.fruitImg + "' alt='HTML5 Icon' style='width: 50px; height: 50px;'>  </td> " +
+                    "<td> " + trav.fruitName + "</td>  <td> " + trav.cartQty + "</td>   <td> " + trav.cartAmount + "</td> " +
+                    "<td> <button onclick='ajaxDeleteCartItem(" + trav.cartId + ")' class='btn-danger'>" +
+                    "<i class='fas fa-trash-alt' style='color:white'> Delete</button > <td> " +
+
+                    "<button onclick='editCartItem(" + trav.cartId + ")' class='btn-info'>" +
+                    "<i class='far fa-edit' style='color:white'> Edit" +
+                    "</button > </td > " +
+
+
+                    "<td> " + trav.userId + "</td> </tr > ";
             })
             $('#list').append(row);//Ability to manipulate DOM using jQuery
         }      
@@ -226,15 +248,19 @@
     function acceptDetailsForOrders() {
         var txtBillingAddress = $('#txtBillingAddress').val();
         var selectPayMethod = $('#selectPayMethod').val();
+        if (txtBillingAddress != "") {
+            $('#getAddress').text(txtBillingAddress);
+            $('#getPayMethod').text(selectPayMethod);
 
-        $('#getAddress').text(txtBillingAddress);
-        $('#getPayMethod').text(selectPayMethod);
+            $('#toggleAddress').show();
+            $('#togglePayMethod').show();
 
-        $('#toggleAddress').show();
-        $('#togglePayMethod').show();
+            $('#togglePlaceOrder').show();
+            $('#toggleAddDetails').hide();
 
-        $('#togglePlaceOrder').show();
-        $('#toggleAddDetails').hide();
+        } else {
+            alert('fill the details');
+        }       
     }
 
     function editCartItem(cartId) {
