@@ -70,6 +70,7 @@ namespace FruitUserApi.Repository
                         FruitImg = fruitItem.FruitImg,
                         FruitName= fruitItem.FruitName,
                         UserId = cart.UserId
+
                     };
                     cartViewModelList.Add(cartViewModelItem);
                 }               
@@ -108,7 +109,7 @@ namespace FruitUserApi.Repository
 
         
 
-        internal bool DeleteData(int id)
+        public bool DeleteData(int id)
         {
             Cart cart = db.Carts.Find(id);
             if (cart != null)

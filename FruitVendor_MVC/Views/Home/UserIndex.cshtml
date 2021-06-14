@@ -4,10 +4,64 @@
 }
 <head>
 
+
     
+    <style>
+
+
+    
+        body {
+            background: url('/Images/bg7.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+
+        #process {
+            margin-top: 200px;
+            margin-left: 500px;
+        }
+
+        #imgProd {
+            padding: 25px;
+            transition: transform .2s;
+            /* Animation */
+            width: 400px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        #imgProd:hover {
+                transform: scale(1.5);
+                /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+        }
+
+        .btn-info:hover {
+            width: 250px;
+            transform: scale(1.5);
+        }
+
+        .product-box {
+
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #0d0e0c;
+            overflow: hidden;
+            border-radius: 15px 50px;
+            padding-bottom: 10px;
+        }
+
+        .product-box:hover {
+            background-color: crimson;
+            color:antiquewhite;
+        }
+    </style>
+
 </head>
 <body>
     <br />
+    @*<button id="" class="btn btn-info"><i class="fas fa-" style="color:white"></i>Add To Cart</button>*@
+
     <div id="getProd" class="container">
         <div class="spinner-border text-danger" id="process"></div>
         <!--   your fruits are displayed here in responsive way     -->
@@ -16,7 +70,7 @@
 </body>
 
 <script type="text/javascript">
-    $('#toggleAdminNavBar').hide();//hide Nav Bar
+    @*$('#toggleAdminNavBar').hide();//hide Nav Bar*@
     $(document).ready(function () {
        
         validateAjaxGetAllFruits();
@@ -76,13 +130,23 @@
             console.log("loop fruit name=" + data[item].fruitName);
             /////////////  prod 1 //////////////////////
             
-            products = products + "<div class='col-xl-4'>";
+            products = products + "<div class='col-sm-4'>";
+
+            products = products + "<div class='product-box'>"
+
             products = products + "<center>";
-            products = products + "<img src='/Images/" + data[item].fruitImg + "' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
+            products = products + "<img id='imgProd' src='/Images/" + data[item].fruitImg + "' alt='HTML5 Icon' style='width: 128px; height: 128px;'>";
             products = products + "<p>" + data[item].fruitName + "</p>";
-            products = products + "<p> <span>Price:<b>" + data[item].fruitPrice + "</b></span>   <span>Qty:<b>" + data[item].fruitQty + "</b></span> </p>";
-            products = products + "<button class='btn-info' onclick='addToCart(" + data[item].fruitId + ")' >Add To Cart</button>";
+            products = products + "<p> <span>Price:$<b>" + data[item].fruitPrice + "</b></span>   <span>Qty:<b>" + data[item].fruitQty + "</b></span> </p>";
+           
+            products = products + "<button class='btn btn-info' onclick='addToCart(" + data[item].fruitId + ")'>" +
+                "Add To Cart " + "<i class='fas fa-cart-plus' style='color:white'>"+
+                                  "</i > </button > ";
+
             products = products + "</center>";
+
+            products = products + "</div>"//product-box
+
             products = products + "</div>";
              
         }//for

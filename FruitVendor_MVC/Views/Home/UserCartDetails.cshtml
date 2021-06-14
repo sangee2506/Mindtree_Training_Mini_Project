@@ -1,6 +1,18 @@
 ﻿
 <head>
-   
+   <style>
+
+       body {
+           background: url('/Images/bg11.jpg');
+           background-repeat: no-repeat;
+           background-size: cover;
+       }
+
+       #discription{
+           overflow:hidden;
+           text-align:justify
+       }
+   </style>
 </head>
 <body>
   @* <h1 id="getFruitId">Your Cart Id:@ViewBag.getFruitId</h1>*@
@@ -12,33 +24,34 @@
         <h1>   <b id="setFruitName"></b>   </h1>
 
         <div id="imgBar">
-            <div>
+            <div id="discription">
                 <p>
                     What is Lorem Ipsum?
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. <br />
-                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s<br />
-                    when an unknown printer took a galley of type and scrambled it to make a type<br />
-                    specimen book. It has survived not only five centuries, but also the leap into <br />
-                    electronic typesetting, remaining essentially unchanged. It was popularised in <br />
-                    the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, <br />
-                    and more recently with desktop publishing software like Aldus PageMaker including versions<br />
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                    when an unknown printer took a galley of type and scrambled it to make a type
+                    specimen book. It has survived not only five centuries, but also the leap into
+                    electronic typesetting, remaining essentially unchanged. It was popularised in 
+                    the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
+                    and more recently with desktop publishing software like Aldus PageMaker including versions
                     of Lorem Ipsum.<br />
                 </p>
             </div>     
         </div>
         <div>
             <p>  Fruit Price/Unit: <span id="setFruitPrice"></span>  </p>
-            <p>  Image: <span id="setFruitImage"></span>  </p>
+
             <p></p>
             <span>Select Qty</span><input id="getFruitQty" type="text" />  <span class="text-success" id="setFruitQty"> </span> <span class="text-success"> in stock</span>
-            <br />
-            <button id="addToCart">Add To Cart</button>
+
+            <button id="addToCart" class="btn btn-info"><i class="fas fa-shopping-cart" style="color:white"></i>Add To Cart</button>
+            
         </div>      
     </div>
 </body>
 
 <script>
-    $('#toggleAdminNavBar').hide();//hide Nav Bar
+   @* $('#toggleAdminNavBar').hide();//hide Nav Bar*@
     $(document).ready(function () {
 
         $('#addToCart').click(function () {
@@ -90,7 +103,7 @@
         $('#setFruitName').text(data.fruitName);
         $('#setFruitPrice').text(data.fruitPrice);
 
-        $('#setFruitImage').text(data.fruitImg);
+       
         $('#getFruitQty').val(data.fruitQty);
         $('#setFruitQty').text(data.fruitQty);
         var img = "<img src='/Images/" + data.fruitImg + "' alt='HTML5 Icon' style='width: 200px; height: 200px;'>";

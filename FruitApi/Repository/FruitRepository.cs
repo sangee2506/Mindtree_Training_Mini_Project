@@ -20,7 +20,7 @@ namespace FruitUserApi.Repository
             return db.Fruits.ToList();
         }
 
-        internal Fruit GetDataById(int id)
+        public Fruit GetDataById(int id)
         {
             Fruit fruit = db.Fruits.Find(id);
             return fruit;

@@ -24,6 +24,7 @@ namespace IdentityService
         {
             Configuration = configuration;
         }
+        //added cors a
         readonly string MyAlowSpecificOrigin = "myAllows";
 
         public IConfiguration Configuration { get; }
@@ -31,6 +32,7 @@ namespace IdentityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //added cors b
             services.AddCors(options =>
             {
                 options.AddPolicy("myAllows",
@@ -45,7 +47,33 @@ namespace IdentityService
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService", Version = "v1" });
+                //
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JwtAuthorization0",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference=new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
+                //
             });
+
 
             SiteKeys.Configure(Configuration.GetSection("AppSettings"));
             
@@ -61,6 +89,7 @@ namespace IdentityService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
             }
 
+            //added cors c
             app.UseCors(MyAlowSpecificOrigin);//added cors
 
             app.UseHttpsRedirection();

@@ -1,6 +1,14 @@
 ﻿
 <head>
-   
+
+    <style>
+        body {
+            background: url('/Images/bg11.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
 </head>
 <body>
     <div id="hidden">
@@ -8,7 +16,7 @@
     </div>
     <h1>Edit Cart Id:@ViewBag.getCartId</h1>
     <center class="container">
-        <div id="editCartForm" class="alert alert-info">
+        <div id="editCartForm">
 
             @*
                 Image
@@ -24,7 +32,7 @@
 </body>
 
 <script>
-    $('#toggleAdminNavBar').hide();//hide Nav Bar
+    @*$('#toggleAdminNavBar').hide();//hide Nav Bar*@
     $(document).ready(function () {
         ajaxGetAllCart();
     });

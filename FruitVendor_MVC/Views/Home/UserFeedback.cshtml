@@ -1,7 +1,43 @@
-﻿<head>
+﻿<head>   
+    <style>
 
-    
 
+        body {
+            background: url('/Images/bg11.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        #box {
+            border: 2px solid crimson;
+            overflow: hidden;
+            border-radius: 15px 50px;
+            overflow: hidden;
+            text-align: justify
+        }
+
+        #box-head {
+            margin-top: 0px;
+            padding: 0px;
+            background-color: crimson;
+        }
+
+        #box-head h3 {
+                color: cornsilk;
+                margin-top: 0px;
+                padding: 10px;
+            }
+
+        #box-head p {
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                margin-top: 0px;
+                padding: 10px;
+            }
+
+        #box-body{
+            padding:20px;
+        }
+    </style>
 </head>
 <body>
     <br />
@@ -31,7 +67,10 @@
 
                     <div class="modal-body">
                         <div class="alert alert-info">
-                            <p> <b>FruitId :</b> <input id="txtFruitId" /> </p>
+                           @* <p> <b>FruitId :</b> <input id="txtFruitId" /> </p>*@
+                            <select id="selectFruitId">
+                                <option>Select Fruit</option>
+                            </select>
                             <p> <b>Message :</b> <input id="txtMessage" /> </p>
                         </div>
                     </div>
@@ -51,10 +90,11 @@
 </body>
 
 <script>
-    $('#toggleAdminNavBar').hide();//hide Nav Bar
+   @* $('#toggleAdminNavBar').hide();//hide Nav Bar*@
 
     $(document).ready(function () {
         validateAjaxGetallFeedbacks();
+        validateAjaxGetAllFruits();
     });//ready
 
     function validateAjaxGetallFeedbacks() {
@@ -94,11 +134,20 @@
     function ResposeForValidateAjaxGetallFeedbacks(data,userId) {
         let html = '';
         $.each(data, function (index, trav) {
-            
-                html = html + '<div  class="alert alert-warning">';
-                html = html + '<h3> Fruit Id:' + trav.fruitId + '</h3>';
-                html = html + '<p>' + trav.message + '</p>';
-                html = html + '</div>';                                  
+
+            html = html + '<div id="box">';
+
+            html = html + '<div  id="box-head" >';
+            html = html + '<h3> Fruit Id#:' + trav.fruitId + '</h3>';
+            html = html + '</div>';  
+
+            html = html + '<div  id="box-body" >';
+            html = html + '<p>' + trav.message + '</p>';
+            html = html + '</div>';  
+
+            html = html + '</div>';  
+
+            html = html+'<br/>'
         })
         $('#list').append(html);
     }
@@ -110,7 +159,7 @@
         var obj = {
             UserId: userId,
             Message: $('#txtMessage').val(),
-            FruitId: $('#txtFruitId').val()
+            FruitId: $('#selectFruitId').val()
         };
 
         $.ajax({
@@ -143,4 +192,51 @@
         });
     }
 
+    function validateAjaxGetAllFruits(){
+
+        let jwtToken = sessionStorage.getItem("jwtToken");
+        let userName = sessionStorage.getItem("userName");
+        let userId = sessionStorage.getItem("userId");
+
+        console.log(userName);
+        console.log(jwtToken);
+
+        $('#userName').html(userName);
+
+        $.ajax({
+            url: 'https://localhost:44339/api/Fruit',
+            type: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + jwtToken
+            },
+            dataType: 'json',
+            success: function (data) {
+                ResponseForAjaxDisplayAllFruits(data);
+            },
+            error: function (request) {
+                var msg = "";
+                msg += "Code: " + request.status + "\n";
+                msg += "Text: " + request.statusText + "\n";
+                if (request.status == 401) {
+                    alert('You are not authorized...Redirecting to sign in');
+                    var url = "https://localhost:44350/";
+                    window.location.href = url;
+                }
+                else {
+                    alert(msg);
+                }
+            }          
+        });
+    }
+
+    function ResponseForAjaxDisplayAllFruits(data){
+         optFruits = '';
+        $.each(data, function (index, mov) {
+            //<option value="volvo">Volvo</option>
+
+            optFruits = "<option value=" + mov.fruitId + ">" + mov.fruitName + "</option>";
+
+            $('#selectFruitId').append( optFruits);
+        })
+    }
 </script>

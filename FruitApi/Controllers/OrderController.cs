@@ -34,15 +34,23 @@ namespace FruitUserApi.Controllers
         //[HttpPost]
         public ActionResult MoveCartToOrders(int userId,Order order)
         {
-            bool res = repo.CreateData(userId,order);
-            if (res)
+            try
             {
-                return Ok("order Placed");
+                bool res = repo.CreateData(userId, order);
+                if (res)
+                {
+                    return Ok("order Placed");
+                }
+                else
+                {
+                    return BadRequest("not added");
+                }
             }
-            else
+            catch (Exception e)
             {
-                return BadRequest("not added");
+                return BadRequest(e.Message);
             }
+           
         }
 
         [HttpGet("{userId}")]
